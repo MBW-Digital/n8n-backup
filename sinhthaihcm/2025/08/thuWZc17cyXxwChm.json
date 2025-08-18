@@ -1,0 +1,573 @@
+{
+  "active": false,
+  "connections": {
+    "Execute Workflow": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Telegram3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Telegram2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Execute Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Create sub path",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create new file": {
+      "main": [
+        [
+          {
+            "node": "Return",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "n8n": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram3": {
+      "main": [
+        [
+          {
+            "node": "n8n",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On clicking 'execute'": {
+      "main": [
+        [
+          {
+            "node": "Telegram3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create sub path": {
+      "main": [
+        [
+          {
+            "node": "Build Name & Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Name & Content": {
+      "main": [
+        [
+          {
+            "node": "Github Delete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Github Delete": {
+      "main": [
+        [
+          {
+            "node": "Create new file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-08-18T04:38:36.689Z",
+  "id": "thuWZc17cyXxwChm",
+  "meta": null,
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {
+        "chatId": "5716657958",
+        "text": ":x: Success to backup {{ $('Loop Over Items').item.json.id }}",
+        "additionalFields": {}
+      },
+      "id": "5a41e66b-207e-496c-94ac-4e2368a57918",
+      "name": "Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2662,
+        1860
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "lJyvQ7QnjJm8ZuQD",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "5716657958",
+        "text": ":information_source:  Starting Workflow Backup [{{ $execution.id }}]",
+        "additionalFields": {}
+      },
+      "id": "26475457-6b59-4268-adc7-cf408d021c4a",
+      "name": "Telegram3",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1722,
+        2000
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "lJyvQ7QnjJm8ZuQD",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "5716657958",
+        "text": "✅ Backup has completed - {{ $('n8n').all().length }} workflows have been processed.",
+        "additionalFields": {}
+      },
+      "id": "9265b68b-508e-4a3b-8e5f-268167fdd5d7",
+      "name": "Telegram2",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2302,
+        1840
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "lJyvQ7QnjJm8ZuQD",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "5716657958",
+        "text": ":x: Failed to backup {{ $('Loop Over Items').item.json.id }}",
+        "additionalFields": {}
+      },
+      "id": "0f3f0b66-0154-499d-97da-8cece09d70de",
+      "name": "Telegram1",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2662,
+        2040
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "lJyvQ7QnjJm8ZuQD",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8f6d1741-772f-462a-811f-4c334185e4f0",
+              "name": "repo_owner",
+              "type": "string",
+              "value": "MBW-Digital"
+            },
+            {
+              "id": "eee305e9-4164-462a-86bd-80f0d58a31ae",
+              "name": "repo_path",
+              "type": "string",
+              "value": "sinhthaihcm/"
+            },
+            {
+              "id": "081eb008-c3b8-4e4d-a01c-a6922ab5fb5d",
+              "name": "repo_name",
+              "value": "n8n-backup",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "2f9524e9-f0aa-48ac-8a02-7db2006d696d",
+      "name": "Config",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1260,
+        2460
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "workflowId": "={{ $workflow.id }}",
+        "mode": "each",
+        "options": {}
+      },
+      "id": "af7fdbc9-6cf4-483c-aa5f-c58c891d5757",
+      "name": "Execute Workflow",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "position": [
+        2322,
+        2020
+      ],
+      "typeVersion": 1,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "content": "## Main workflow loop",
+        "height": 440.50019039253914,
+        "width": 1590.0907420635438,
+        "color": 7
+      },
+      "id": "aba2c40b-f31b-4a26-ba16-581cd4924316",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1380,
+        1820
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Backup to GitHub \nThis workflow will backup all instance workflows to GitHub every 24 hours.\n\nThe files are saved into folders using `YYYY/MM/` for the directory path and `ID.json` for the filename.\n\nThe Repo Owner, Repo Name and Main folder are set using the **Variables** feature but can be replaced with the `Config` node in the subworkflow. \n\nThe workflow runs calls itself to help reduce memory usage, Once the workflow has completed it will send an optional notification to Slack.\n\n### Time to Run\nTested with 1423 workflows on `1.44.1` it took under 30 minutes for the first run and under 12 minutes once the initial run is complete.",
+        "height": 417,
+        "width": 385,
+        "color": 4
+      },
+      "id": "a49e9d7b-d2a5-4973-8b28-54d2e3b16ed8",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        962,
+        1840
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dae43d3b-56e5-4098-b602-862ebf5cd073",
+              "name": "subPath",
+              "type": "string",
+              "value": "={{ $('Execute Workflow Trigger').first().json.createdAt ? $('Execute Workflow Trigger').first().json.createdAt.split('-')[0] + '/' + $('Execute Workflow Trigger').first().json.createdAt.split('-')[1] + '/' : $now.toISOString().slice(0,7).replace('-','/') + '/' }}"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "42405848-b190-48f1-ab81-665448427f37",
+      "name": "Create sub path",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1500,
+        2460
+      ],
+      "typeVersion": 3.3
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 1,
+              "triggerAtMinute": 33
+            }
+          ]
+        }
+      },
+      "id": "292c4ebf-3e0f-4229-971c-0bbb7da88942",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        1502,
+        2100
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "7d8a14ba-452c-4086-9cbc-0f5182bb2a6f",
+      "name": "Loop Over Items",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        2102,
+        2000
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "={{ $('Config').first().json.repo_owner }}",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "={{ $('Config').first().json.repo_name }}",
+          "mode": "name"
+        },
+        "filePath": "={{ $json.repo_path }}{{ $json.subPath }}{{ $('Build Name & Content').first().json.file_basename }}.js",
+        "fileContent": "={{ $('Build Name & Content').first().json.file_content }}",
+        "commitMessage": "={{ $('Execute Workflow Trigger').first().json.name || 'Workflow' }} (replaced)\n"
+      },
+      "id": "e3a78156-ce40-4a07-8645-b8948cfb6129",
+      "name": "Create new file",
+      "type": "n8n-nodes-base.github",
+      "position": [
+        2220,
+        2460
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "githubApi": {
+          "id": "i0ZoAWs05nqXR0aX",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8d513345-6484-431f-afb7-7cf045c90f4f",
+              "name": "Done",
+              "type": "boolean",
+              "value": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "191978d7-0a84-4b99-ba3f-73d1bacf91a1",
+      "name": "Return",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        2500,
+        2460
+      ],
+      "typeVersion": 3.3
+    },
+    {
+      "parameters": {
+        "filters": {},
+        "requestOptions": {}
+      },
+      "id": "c6695aa5-e2be-40d4-9c6b-d394b8e66c38",
+      "name": "n8n",
+      "type": "n8n-nodes-base.n8n",
+      "position": [
+        1902,
+        2000
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "n8nApi": {
+          "id": "TaCec984BadVZPFs",
+          "name": "n8n account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "bd2d77ef-f966-4f86-a1e3-b6ca3234dfd2",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        1042,
+        2460
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Subworkflow",
+        "height": 731.7039821513649,
+        "width": 2002.8290535857614,
+        "color": 6
+      },
+      "id": "93d9c700-9004-4aee-af4e-d0d2794927a6",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        980,
+        2280
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {},
+      "id": "d3f2ab2e-b9f1-4ecd-9299-b17896a06640",
+      "name": "On clicking 'execute'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        1502,
+        1900
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsCode": "// Hàm sắp xếp key\nconst orderJsonKeys = (jsonObj) => {\n  if (Array.isArray(jsonObj)) {\n    return jsonObj.map(orderJsonKeys);\n  } else if (jsonObj && typeof jsonObj === \"object\") {\n    return Object.keys(jsonObj).sort().reduce((acc, key) => {\n      acc[key] = orderJsonKeys(jsonObj[key]);\n      return acc;\n    }, {});\n  }\n  return jsonObj;\n};\n\n// Lấy workflow hiện tại\nconst wf = $input.all()[1]?.json || {};\n\n// Sắp xếp key để ổn định\nconst ordered = orderJsonKeys(wf);\n\n// Xuất JSON đẹp\nconst content = JSON.stringify(ordered, null, 2);\n\n// Trả về: nội dung + tên file (chuẩn hoá để an toàn)\nconst rawName = (wf.name || wf.id || \"workflow\").toString();\nconst safeName = rawName\n  .normalize(\"NFD\").replace(/[\\u0300-\\u036f]/g, \"\")\n  .replace(/[\\/\\\\]/g, \"-\")\n  .replace(/\\s+/g, \"-\")\n  .replace(/[^a-zA-Z0-9\\-_]/g, \"\")\n  .replace(/-+/g, \"-\")\n  .toLowerCase()\n  .slice(0, 128) || \"workflow\";\n\nreturn [\n  {\n    json: {\n      file_basename: safeName,\n      file_content: content,\n    }\n  }\n];\n"
+      },
+      "id": "3b52971d-8573-451a-b77f-547dc3608dbf",
+      "name": "Build Name & Content",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        1760,
+        2460
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "delete",
+        "owner": {
+          "__rl": true,
+          "value": "={{ $('Config').first().json.repo_owner }}",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "={{ $('Config').first().json.repo_name }}",
+          "mode": "name"
+        },
+        "filePath": "={{ $('Config').first().json.repo_path }}{{ $('Create sub path').first().json.subPath }}{{ $('Build Name & Content').first().json.file_basename }}.js",
+        "commitMessage": "={{ $('Execute Workflow Trigger').first().json.name || 'Workflow' }} (replaced)\n"
+      },
+      "id": "e2a4093f-293c-4560-8ad6-4bd20105290c",
+      "name": "Github Delete",
+      "type": "n8n-nodes-base.github",
+      "position": [
+        1980,
+        2460
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "githubApi": {
+          "id": "i0ZoAWs05nqXR0aX",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "cab91baf-8a78-4660-9b7f-9a514eca9059",
+      "name": "DebugHelper",
+      "type": "n8n-nodes-base.debugHelper",
+      "typeVersion": 1,
+      "position": [
+        1860,
+        3300
+      ]
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-backup",
+  "repo_owner": "MBW-Digital",
+  "repo_path": "sinhthaihcm/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-08-18T05:48:29.693Z",
+  "versionId": "68a0e057-10d9-4140-aef2-0d0444d4abb4"
+}
