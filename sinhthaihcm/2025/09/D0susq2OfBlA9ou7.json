@@ -1,0 +1,38 @@
+{
+  "active": false,
+  "connections": {},
+  "createdAt": "2025-09-06T02:27:11.215Z",
+  "id": "D0susq2OfBlA9ou7",
+  "meta": null,
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "0fdd86a8-13fa-48f7-b235-188539345968",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "abcd164c-141a-4a28-b06b-9335780f6631",
+      "name": "Webhook",
+      "webhookId": "0fdd86a8-13fa-48f7-b235-188539345968"
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-backup",
+  "repo_owner": "MBW-Digital",
+  "repo_path": "sinhthaihcm/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-06T02:27:11.215Z",
+  "versionId": "df33ec53-f6c9-4d50-89ff-c8191a3c9dca"
+}
