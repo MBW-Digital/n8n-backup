@@ -1,0 +1,342 @@
+{
+  "active": false,
+  "connections": {
+    "Check Data Existence": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Preserve Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Data Exists": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Create UOM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Data Info": {
+      "main": [
+        [
+          {
+            "node": "Write Logs To ERPNEXT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preserve Data": {
+      "main": [
+        [
+          {
+            "node": "Merge Data Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get Unit in MobiworkDMS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SplitInBatches1": {
+      "main": [
+        [
+          {
+            "node": "IF Data Exists",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge Data Info",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Unit in MobiworkDMS": {
+      "main": [
+        [
+          {
+            "node": "UOM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "UOM": {
+      "main": [
+        [
+          {
+            "node": "Check Data Existence",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create UOM": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-09-09T09:00:52.232Z",
+  "id": "OhAotL7kao1U4LoK",
+  "meta": null,
+  "name": "[DMS] Đồng bộ dữ liệu Đơn Vị Tính DMS -> ERPNext",
+  "nodes": [
+    {
+      "parameters": {
+        "functionCode": "// Lấy dữ liệu từ 2 nguồn\nconst dmsData = $node['Get Unit in MobiworkDMS'].json.data || [];\nconst erpData = $json || [];   // ERPNext trả về array UOM\n\n// Chuẩn hóa ERP thành mảng mã (uppercase để so sánh)\nconst erpCodes = erpData.map(u => (u.name || '').toUpperCase());\n\n// Lọc ra những đơn vị tính chỉ có ở DMS mà không có trong ERP\nreturn dmsData\n  .filter(d => d.ma && !erpCodes.includes(d.ma.toUpperCase()))\n  .map(d => ({\n    json: {\n      isExists: false,   // ERP chưa có\n      id: d.id || null,\n      ma: d.ma,\n      ten: d.ten,\n      trang_thai: d.trang_thai,\n      stt: d.stt\n    }\n  }));"
+      },
+      "name": "Check Data Existence",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        -220,
+        160
+      ],
+      "id": "94fb48a0-18ac-480f-98b3-797a5a2e9ed2",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json['isExists'] }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "name": "IF Data Exists",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        220,
+        260
+      ],
+      "id": "7431a508-f46a-4bea-a602-bc449eaee14f",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Integration Logs",
+        "operation": "create",
+        "parameters": "{\n\n  \"sync_type\": \"UOM\",\n  \"records_processed\": \"2\",\n  \"status\": \"Success\",\n  \"log_message\": \"123\"\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        440,
+        60
+      ],
+      "id": "cce0f0ae-bcbb-4a3b-8aea-ca0423e2a4e6",
+      "name": "Write Logs To ERPNEXT",
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Frappe Custom Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "mergeByIndex",
+        "join": "inner"
+      },
+      "name": "Merge Data Info",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 1,
+      "position": [
+        220,
+        60
+      ],
+      "id": "302beeb9-72d5-4704-844f-8b4896bcf8ba"
+    },
+    {
+      "parameters": {
+        "functionCode": "\nreturn [{ json: $json }];"
+      },
+      "name": "Preserve Data",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "6fba783e-e399-4d10-931e-1d778072f25f",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -880,
+        160
+      ],
+      "id": "5b11d9bd-5295-4721-a7b0-31fc821b6784",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {
+          "reset": false
+        }
+      },
+      "id": "7788a9a7-ddc2-4fff-a69c-1f7989309e03",
+      "name": "SplitInBatches1",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        0,
+        260
+      ],
+      "typeVersion": 2,
+      "notesInFlow": true
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        660,
+        380
+      ],
+      "id": "3665e903-d27a-4675-b146-7ebb84052e72",
+      "name": "Wait",
+      "webhookId": "0bfc27be-e90b-4d9c-aaa7-9cbebfb257ce"
+    },
+    {
+      "parameters": {
+        "resource": "unit",
+        "additionalFields": {}
+      },
+      "type": "CUSTOM.mbwdmsCustom",
+      "typeVersion": 1,
+      "position": [
+        -660,
+        160
+      ],
+      "id": "0f475cbb-edf4-46fc-99ae-58ac17bc5296",
+      "name": "Get Unit in MobiworkDMS",
+      "credentials": {
+        "MBWDMSCustomApi": {
+          "id": "CL08GJJwCUpHDevr",
+          "name": "MBW DMS Open APIs "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "doctype": "UOM",
+        "fields": "uom_name,name"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -440,
+        160
+      ],
+      "id": "b4ace830-d463-4386-a254-50de42bef905",
+      "name": "UOM",
+      "alwaysOutputData": true,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Frappe Custom Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "doctype": "UOM",
+        "operation": "create",
+        "parameters": "={\"uom_name\":\"{{ $json['ten'] }}\"}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        440,
+        260
+      ],
+      "id": "f97d5f7f-52ce-4a83-a702-aadcad857bed",
+      "name": "Create UOM",
+      "alwaysOutputData": true,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Frappe Custom Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-backup",
+  "repo_owner": "MBW-Digital",
+  "repo_path": "sinhthaihcm/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-09-09T08:58:51.547Z",
+      "updatedAt": "2025-09-09T08:58:51.547Z",
+      "id": "neaSaDNALEghkloE",
+      "name": "MBW DMS"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-09T09:00:55.380Z",
+  "versionId": "54fbaec7-e176-4b90-ba05-088772347e31"
+}
