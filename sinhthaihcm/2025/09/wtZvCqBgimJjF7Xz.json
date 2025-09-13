@@ -1,0 +1,287 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Lấy danh sách Nhãn hiệu của MobiworkDMS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Data Existence": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Data Exists": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Create Brand",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SplitInBatches1": {
+      "main": [
+        [
+          {
+            "node": "IF Data Exists",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Write Logs To ERPNEXT1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lấy danh sách Nhãn hiệu của MobiworkDMS": {
+      "main": [
+        [
+          {
+            "node": "Lấy danh sách Brand của ERPNext",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lấy danh sách Brand của ERPNext": {
+      "main": [
+        [
+          {
+            "node": "Check Data Existence",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Brand": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-09-13T04:55:35.423Z",
+  "id": "wtZvCqBgimJjF7Xz",
+  "meta": null,
+  "name": "[DMS] Đồng bộ dữ liệu Brand từ DMS -> ERPNext",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1460,
+        220
+      ],
+      "id": "8afc4f7d-dc8b-4d00-a58e-910c44ef39e5",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Lấy dữ liệu từ 2 nguồn\nconst dmsData = $node['Lấy danh sách Nhãn hiệu của MobiworkDMS'].json.data || [];\nconst erpData = $json || [];   // ERPNext trả về array UOM\n\n// Chuẩn hóa ERP thành mảng mã (uppercase để so sánh)\nconst erpCodes = erpData.map(u => (u.name || '').toUpperCase());\n\n// Lọc ra những đơn vị tính chỉ có ở DMS mà không có trong ERP\nreturn dmsData\n  .filter(d => d.ma && !erpCodes.includes(d.ma.toUpperCase()))\n  .map(d => ({\n    json: {\n      isExists: false,   // ERP chưa có\n      id: d.id || null,\n      ma: d.ma,\n      ten: d.ten,\n      trang_thai: d.trang_thai,\n      stt: d.stt\n    }\n  }));"
+      },
+      "name": "Check Data Existence",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        -800,
+        220
+      ],
+      "id": "494ae933-a6b4-4db8-83db-75bd1309650c",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json['isExists'] }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "name": "IF Data Exists",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -360,
+        220
+      ],
+      "id": "d1fc75da-ba15-44e8-87a5-f6af028e86d4",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {
+          "reset": false
+        }
+      },
+      "id": "b0952226-5482-4de8-af76-bc7d77093bd5",
+      "name": "SplitInBatches1",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        -580,
+        220
+      ],
+      "typeVersion": 2,
+      "notesInFlow": true
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        80,
+        300
+      ],
+      "id": "1ae125cf-ba9b-43e3-8ae6-ab9799c57019",
+      "name": "Wait",
+      "webhookId": "0bfc27be-e90b-4d9c-aaa7-9cbebfb257ce"
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Integration Logs",
+        "operation": "create",
+        "parameters": "{\n\n  \"sync_type\": \"UOM\",\n  \"records_processed\": \"2\",\n  \"status\": \"Success\",\n  \"log_message\": \"123\"\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -360,
+        20
+      ],
+      "id": "c82f2f30-6db3-463e-9de6-247e015d67ff",
+      "name": "Write Logs To ERPNEXT1",
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Frappe Custom Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "brand",
+        "additionalFields": {}
+      },
+      "type": "CUSTOM.mbwdmsCustom",
+      "typeVersion": 1,
+      "position": [
+        -1240,
+        220
+      ],
+      "id": "2263679e-82df-49b2-afba-2d917cc5e9e5",
+      "name": "Lấy danh sách Nhãn hiệu của MobiworkDMS",
+      "credentials": {
+        "MBWDMSCustomApi": {
+          "id": "CL08GJJwCUpHDevr",
+          "name": "MBW DMS Open APIs "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "doctype": "Brand",
+        "fields": "name,brand"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -1020,
+        220
+      ],
+      "id": "f0a1d8a1-bd68-4937-a15d-fa57bfeeb1da",
+      "name": "Lấy danh sách Brand của ERPNext",
+      "alwaysOutputData": true,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Frappe Custom Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "doctype": "Brand",
+        "operation": "create",
+        "parameters": "={\"brand\":\"{{ $json['ten'] }}\"}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -140,
+        220
+      ],
+      "id": "4b026dfc-563d-4f72-b455-e5889c024728",
+      "name": "Create Brand",
+      "alwaysOutputData": true,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Frappe Custom Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-backup",
+  "repo_owner": "MBW-Digital",
+  "repo_path": "sinhthaihcm/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-09-09T08:58:51.547Z",
+      "updatedAt": "2025-09-09T08:58:51.547Z",
+      "id": "neaSaDNALEghkloE",
+      "name": "MBW DMS"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-13T04:55:49.102Z",
+  "versionId": "60d471e3-57cf-4333-8f02-e485050f878e"
+}
