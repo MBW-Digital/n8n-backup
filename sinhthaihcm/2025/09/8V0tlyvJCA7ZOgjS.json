@@ -1,0 +1,200 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Lấy nhà phân phối MobiworkDMS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MBWD ERPNext": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "MBWD ERPNext",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lấy nhà phân phối MobiworkDMS": {
+      "main": [
+        [
+          {
+            "node": "Chuyển đổi dữ liệu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chuyển đổi dữ liệu": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-09-09T08:58:00.372Z",
+  "id": "8V0tlyvJCA7ZOgjS",
+  "isArchived": false,
+  "meta": null,
+  "name": "[DMS] Đồng bộ dữ liệu nhà phân phối từ DMS -> ERPNext",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "4d4bb295-c439-4f43-8371-2162965bbf00",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "operation": "create",
+        "parameters": "={\n  \"reference_doctype\": \"Distribution\",\n  \"reference_name\": \"{{ $json.reference_name }}\",\n  \"operation\": \"Create\",\n  \"retry_count\": 0,\n  \"status\": \"Pending\",\n  \"payload\": {{JSON.stringify($json.payload_str)}},\n  \"log_message\": \"Distribution create from Sync MBW DMS\",\n  \"create_date\": \"\",\n  \"sync_time\": null,\n  \"source_data\": \"MBW DMS\"\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        900,
+        20
+      ],
+      "id": "2e7ced3b-228a-4dd3-8275-242a8afa0b33",
+      "name": "MBWD ERPNext",
+      "alwaysOutputData": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Frappe Custom Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        660,
+        0
+      ],
+      "id": "b501164a-fc65-4eb8-8a24-79c882153073",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "amount": 0.5
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1100,
+        0
+      ],
+      "id": "48d0f233-20fa-4566-95e6-60ccc26d0034",
+      "name": "Wait",
+      "webhookId": "bd6345c5-b037-4c4a-ad06-83eb9a42803f"
+    },
+    {
+      "parameters": {
+        "resource": "distributor",
+        "additionalFields": {}
+      },
+      "type": "CUSTOM.mbwdmsCustom",
+      "typeVersion": 1,
+      "position": [
+        220,
+        0
+      ],
+      "id": "73688a13-571f-432c-9d52-6d9f247b2e91",
+      "name": "Lấy nhà phân phối MobiworkDMS",
+      "credentials": {
+        "MBWDMSCustomApi": {
+          "id": "CL08GJJwCUpHDevr",
+          "name": "MBW DMS Open APIs "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Input có thể là mảng phẳng ([]) hoặc bọc ở { data: [] } / [{ data: [] }]\nconst raw = $json;\nlet rows = [];\n\nif (Array.isArray(raw)) {\n  rows = raw;\n} else if (Array.isArray(raw?.data)) {\n  rows = raw.data;\n} else if (raw && typeof raw === 'object') {\n  rows = [raw];\n} else {\n  rows = [];\n}\n\nreturn rows\n  .map((json) => {\n    const codeRaw = (json.ma ?? '').toString().trim();\n    const nameRaw = (json.ten ?? '').toString().trim();\n\n    // parent: yêu cầu chỉ lấy khi có parent (không null/rỗng)\n    const parentRaw = (json.parentid ?? '').toString().trim();\n    const parent = parentRaw ? parentRaw.toUpperCase() : null;\n\n    // Thiếu mã, tên hoặc không có parent -> bỏ qua\n    if (!codeRaw || !nameRaw || !parent) return null;\n\n    // Chuẩn hoá mã → UPPERCASE\n    const code = codeRaw.toUpperCase();\n\n    // Payload Distribution (có parent_code)\n    const payload = {\n      doctype: 'Distribution',\n      distribution_code: code,\n      distribution_name: nameRaw,\n      is_active: json.trang_thai !== false,\n      status: json.trang_thai !== false ? 'Active' : 'Disabled',\n      parent_code: parent,                // <--- bổ sung parent\n      mbw_stt: json.stt ?? null,\n      mbw_updated_at: json.ngay_cap_nhat ?? null,\n    };\n\n    return {\n      json: {\n        payload_str: JSON.stringify(payload),\n        reference_doctype: 'Distribution',\n        reference_name: code,\n        operation: 'Create', // hoặc 'Upsert' nếu hỗ trợ\n        retry_count: 0,\n        status: 'Pending',\n        log_message: 'Auto-created for Distribution operation',\n        create_date: new Date().toISOString(),\n        sync_time: null,\n        source_data: 'MBW NEXT',\n      }\n    };\n  })\n  .filter(Boolean);\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        0
+      ],
+      "id": "f7e2ca1e-2b5c-4c9d-906a-1660320933a4",
+      "name": "Chuyển đổi dữ liệu"
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-backup",
+  "repo_owner": "MBW-Digital",
+  "repo_path": "sinhthaihcm/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-09-09T08:58:00.372Z",
+      "updatedAt": "2025-09-09T08:58:00.372Z",
+      "role": "workflow:owner",
+      "workflowId": "8V0tlyvJCA7ZOgjS",
+      "projectId": "NLp1g7OOFWKDmygg"
+    }
+  ],
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-09-09T08:58:51.547Z",
+      "updatedAt": "2025-09-09T08:58:51.547Z",
+      "id": "neaSaDNALEghkloE",
+      "name": "MBW DMS"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-18T08:59:57.587Z",
+  "versionId": "7f213281-72c8-480d-bcff-00c7f5eade75"
+}
