@@ -1,0 +1,347 @@
+{
+  "active": false,
+  "connections": {
+    "Check Data Existence": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Preserve Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Data Exists": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Create UOM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Data Info": {
+      "main": [
+        [
+          {
+            "node": "Write Logs To ERPNEXT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preserve Data": {
+      "main": [
+        [
+          {
+            "node": "Merge Data Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get Industry in MobiworkDMS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SplitInBatches1": {
+      "main": [
+        [
+          {
+            "node": "IF Data Exists",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge Data Info",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create UOM": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Industry in MobiworkDMS": {
+      "main": [
+        [
+          {
+            "node": "Item Group",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Group": {
+      "main": [
+        [
+          {
+            "node": "Check Data Existence",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-09-22T10:15:06.602Z",
+  "id": "Hes2cE9KlKKxaVCZ",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "[DMS] Đồng bộ dữ liệu Ngành Hàng DMS -> ERPNext",
+  "nodes": [
+    {
+      "parameters": {
+        "functionCode": "// === INPUT ===\n// $node['Get Industry in MobiworkDMS'].json.data  -> DMS list (ma, ten, parentid, trang_thai, stt, ...)\n// $json                                           -> ERP list (name, item_group_name, parent_item_group, is_group)\n\n// Helper chuẩn hóa so sánh (unicode + khoảng trắng + in hoa)\nconst N = (s) => (s ?? '').toString().normalize('NFC').trim().toUpperCase();\n\n// 1) Lấy dữ liệu\nconst dmsRaw = $node['Get Industry in MobiworkDMS'].json?.data ?? [];\nconst erpRaw = Array.isArray($json) ? $json : [];\n\n// 2) Tập mã/ten đang có trên ERP (so sánh theo 'name')\nconst erpNames = new Set(erpRaw.map(x => N(x.name)).filter(Boolean));\n\n// 3) Chuẩn hóa DMS\nconst dms = dmsRaw\n  .map(x => ({\n    code: (x.ma ?? '').toString().trim(),         // sẽ dùng làm name khi tạo\n    name: (x.ten ?? '').toString().trim(),        // item_group_name\n    parent: (x.parentid ?? '').toString().trim(), // rỗng => root\n    active: x.trang_thai !== false,\n    stt: x.stt ?? null,\n  }))\n  .filter(x => x.code && x.name); // bắt buộc có mã & tên\n\n// 4) Map nhanh theo code để lần parent\nconst dmsByCode = new Map(dms.map(x => [x.code, x]));\n\n// 5) Những code cần tạo (chưa có trên ERP)\nconst needCreate = new Set(\n  dms.filter(x => !erpNames.has(N(x.code))).map(x => x.code)\n);\n\n// 6) Đảm bảo chuỗi cha → con\nconst visited = new Set();\nconst ordered = [];\n\nfunction ensureChain(code) {\n  if (visited.has(code)) return;\n  visited.add(code);\n  const cur = dmsByCode.get(code);\n  if (!cur) return;\n\n  if (cur.parent) {\n    const parentOnErp = erpNames.has(N(cur.parent));\n    if (!parentOnErp && dmsByCode.has(cur.parent)) {\n      ensureChain(cur.parent); // đẩy cha vào trước\n    }\n  }\n  ordered.push(cur);\n}\n\nfor (const code of needCreate) ensureChain(code);\n\n// 7) Trả mảng để tạo (nếu rỗng -> [])\nconst out = ordered.map(x => ({\n  json: {\n    // Trường dùng cho Create Item Group\n    name: x.code,                       // muốn đặt \"name\" = mã DMS\n    item_group_name: x.name,            // tên hiển thị\n    parent_item_group: x.parent || undefined, // root thì undefined\n    is_group: x.parent ? 0 : 1,         // root là group cha\n    // Thêm vài flag/memo nếu cần\n    dms_code: x.code,\n    active: x.active,\n    stt: x.stt,\n  }\n}));\n\nreturn out.length ? out : [];\n"
+      },
+      "name": "Check Data Existence",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        160
+      ],
+      "id": "c61e63df-fea5-4fb7-a491-7d6bfb4e93e9",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json['isExists'] }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "name": "IF Data Exists",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        224,
+        256
+      ],
+      "id": "a152e364-3982-4e58-b1fd-c0df57e9c2e0",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Integration Logs",
+        "operation": "create",
+        "parameters": "{\n\n  \"sync_type\": \"UOM\",\n  \"records_processed\": \"2\",\n  \"status\": \"Success\",\n  \"log_message\": \"123\"\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        448,
+        64
+      ],
+      "id": "e64e4282-c3bf-4f4e-a396-bcc3a6012300",
+      "name": "Write Logs To ERPNEXT",
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Frappe Custom Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "mergeByIndex",
+        "join": "inner"
+      },
+      "name": "Merge Data Info",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 1,
+      "position": [
+        224,
+        64
+      ],
+      "id": "3f6f9684-02ec-472a-a622-fb3c69904b00"
+    },
+    {
+      "parameters": {
+        "functionCode": "\nreturn [{ json: $json }];"
+      },
+      "name": "Preserve Data",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "ae8be62c-9ed2-4a05-a85c-6be411c18c80",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -880,
+        160
+      ],
+      "id": "0d89a5c3-8e8e-4de3-8554-1bf8cfc52237",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {
+          "reset": false
+        }
+      },
+      "id": "c5fd2b46-543d-487f-beed-fc5f6e6ca49b",
+      "name": "SplitInBatches1",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        0,
+        256
+      ],
+      "typeVersion": 2,
+      "notesInFlow": true
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        672,
+        384
+      ],
+      "id": "900ddc7e-88b5-4dc8-ba14-a3d7a14515b7",
+      "name": "Wait",
+      "webhookId": "032098e3-b118-4605-8131-0035c9917fb1"
+    },
+    {
+      "parameters": {
+        "doctype": "Item Group",
+        "operation": "create",
+        "parameters": "={\n  \"name\": \"{{ $json.name }}\",\n  \"item_group_name\": \"{{ $json.item_group_name }}\",\n  \"is_group\": {{ $json.is_group }},\n  \"parent_item_group\": \"{{ $json.parent_item_group }}\",\n  \"custom_dms_code\": \"{{ $json.dms_code }}\",\n  \"custom_active\": {{ $json.active ? 1 : 0 }},\n  \"custom_stt\": \"{{ $json.stt ? $json.stt : undefined }}\"\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        448,
+        256
+      ],
+      "id": "4d1b576a-f8d8-4758-bacc-dc99889467ec",
+      "name": "Create UOM",
+      "alwaysOutputData": true,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Frappe Custom Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "industry",
+        "additionalFields": {}
+      },
+      "type": "CUSTOM.mbwdmsCustom",
+      "typeVersion": 1,
+      "position": [
+        -656,
+        160
+      ],
+      "id": "aca296f0-0ab8-4213-a936-e87f8eee0a52",
+      "name": "Get Industry in MobiworkDMS",
+      "credentials": {
+        "MBWDMSCustomApi": {
+          "id": "CL08GJJwCUpHDevr",
+          "name": "MBW DMS Open APIs "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "doctype": "Item Group",
+        "fields": "name,item_group_name,parent_item_group,is_group"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -448,
+        160
+      ],
+      "id": "9220aa90-a2d7-4ac6-befb-a249971a0b9a",
+      "name": "Item Group",
+      "alwaysOutputData": true,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Frappe Custom Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-backup",
+  "repo_owner": "MBW-Digital",
+  "repo_path": "sinhthaihcm/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-09-22T10:15:06.602Z",
+      "updatedAt": "2025-09-22T10:15:06.602Z",
+      "role": "workflow:owner",
+      "workflowId": "Hes2cE9KlKKxaVCZ",
+      "projectId": "NLp1g7OOFWKDmygg"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-22T10:15:35.717Z",
+  "versionId": "42889164-2da8-4563-a03e-0352da467a2c"
+}
