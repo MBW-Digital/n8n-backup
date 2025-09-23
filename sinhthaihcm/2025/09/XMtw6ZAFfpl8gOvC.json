@@ -1,0 +1,321 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get Territory in MobiworkDMS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SplitInBatches": {
+      "main": [
+        [
+          {
+            "node": "Create Territory",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge Data Info",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Territory": {
+      "main": [
+        [
+          {
+            "node": "Check Data Existence",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Territory in MobiworkDMS": {
+      "main": [
+        [
+          {
+            "node": "Territory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Data Existence": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Preserve Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Territory": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preserve Data": {
+      "main": [
+        [
+          {
+            "node": "Merge Data Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Data Info": {
+      "main": [
+        [
+          {
+            "node": "Write Logs To ERPNEXT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-09-22T10:21:05.288Z",
+  "id": "XMtw6ZAFfpl8gOvC",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "[DMS] Đồng bộ dữ liệu khu vực từ DMS -> ERPNext",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -880,
+        160
+      ],
+      "id": "4916a0d1-7eac-4061-9d6f-176111f22254",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {
+          "reset": false
+        }
+      },
+      "id": "72b87649-34e4-4727-bb6d-49709022fa56",
+      "name": "SplitInBatches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        0,
+        256
+      ],
+      "typeVersion": 2,
+      "notesInFlow": true
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        448,
+        272
+      ],
+      "id": "1a1e7d74-a56f-4361-8fd9-6e824f52927b",
+      "name": "Wait1",
+      "webhookId": "032098e3-b118-4605-8131-0035c9917fb1"
+    },
+    {
+      "parameters": {
+        "doctype": "Territory",
+        "fields": "territory_name,name,parent_territory"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -448,
+        160
+      ],
+      "id": "c77b9738-de55-4a5a-aace-6bf6b0033a35",
+      "name": "Territory",
+      "alwaysOutputData": true,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Frappe Custom Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "customerRegion",
+        "additionalFields": {}
+      },
+      "type": "CUSTOM.mbwdmsCustom",
+      "typeVersion": 1,
+      "position": [
+        -656,
+        160
+      ],
+      "id": "7fe6ed7e-22da-45fa-920c-592bf832c2cd",
+      "name": "Get Territory in MobiworkDMS",
+      "credentials": {
+        "MBWDMSCustomApi": {
+          "id": "CL08GJJwCUpHDevr",
+          "name": "MBW DMS Open APIs "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "// === INPUT ===\n// $node['Get Territory in MobiworkDMS'].json.data  -> DMS list (ma, ten, parentid, trang_thai, stt, ...)\n// $json                                           -> ERP list (name, item_group_name, parent_item_group, is_group)\n\n// Helper chuẩn hóa để so sánh (unicode + khoảng trắng + in hoa)\nconst N = (s) => (s ?? '').toString().normalize('NFC').trim().toUpperCase();\n\n// 1) Lấy dữ liệu từ các node trước\nconst dmsRaw = $node['Get Territory in MobiworkDMS'].json?.data ?? [];\nconst erpRaw = Array.isArray($json) ? $json : [];\n\n// 2) Tạo tập hợp mã (name) đang có trên ERP (dùng để kiểm tra trùng lặp)\nconst erpNames = new Set(\n  erpRaw\n    .map(x => N(x.name))\n    .filter(Boolean) // bỏ các giá trị rỗng\n);\n\n// 3) Chuẩn hóa dữ liệu DMS\nconst dms = dmsRaw\n  .map(x => ({\n    code: (x.ma ?? '').toString().trim(),         // Mã DMS -> dùng làm \"name\" trong ERP\n    name: (x.ten ?? '').toString().trim(),        // Tên hiển thị\n    parent: (x.parentid ?? '').toString().trim(), // Nếu rỗng -> root\n    active: x.trang_thai !== false,               // Mặc định true nếu không có dữ liệu\n    stt: x.stt ?? null,\n  }))\n  // Bắt buộc phải có code và name mới giữ lại\n  .filter(x => x.code && x.name);\n\n// 4) Map nhanh DMS theo code để tra cứu nhanh\nconst dmsByCode = new Map(dms.map(x => [x.code, x]));\n\n// 5) Lọc ra những code **chưa tồn tại trên ERP**\n// -> Đây là bước đảm bảo nếu đã có trong ERP sẽ bị loại bỏ\nconst needCreate = new Set(\n  dms\n    .filter(x => !erpNames.has(N(x.code))) // loại bỏ các record đã có\n    .map(x => x.code)\n);\n\n// Nếu tất cả đã tồn tại trên ERP thì trả về []\nif (needCreate.size === 0) {\n  return [];\n}\n\n// 6) Đảm bảo **cha được tạo trước con** (nếu parent chưa có trong ERP)\nconst visited = new Set();\nconst ordered = [];\n\n/**\n * Đệ quy đảm bảo tạo parent trước con\n * @param {string} code\n */\nfunction ensureChain(code) {\n  if (visited.has(code)) return;\n  visited.add(code);\n\n  const cur = dmsByCode.get(code);\n  if (!cur) return;\n\n  // Nếu record này có parent\n  if (cur.parent) {\n    const parentOnErp = erpNames.has(N(cur.parent));   // parent đã có trên ERP chưa\n    const parentInDms = dmsByCode.has(cur.parent);     // parent có trong DMS không\n\n    // Nếu parent chưa có trên ERP nhưng có trong DMS -> đệ quy tạo parent trước\n    if (!parentOnErp && parentInDms) {\n      ensureChain(cur.parent);\n    }\n  }\n\n  ordered.push(cur);\n}\n\n// Chạy đệ quy cho tất cả record cần tạo\nfor (const code of needCreate) {\n  ensureChain(code);\n}\n\n// 7) Chuẩn bị dữ liệu output cho node Create UOM\nconst out = ordered.map(x => ({\n  json: {\n    // Các trường chính cho ERPNext\n    name: x.code,                                // Dùng code DMS làm name\n    item_group_name: x.name,                     // Tên hiển thị\n    parent_item_group: x.parent || undefined,    // Root => undefined\n    is_group: x.parent ? 0 : 1,                  // Root là group cha\n\n    // Các trường bổ sung\n    dms_code: x.code,\n    active: x.active,\n    stt: x.stt,\n  }\n}));\n\n// Nếu không có record nào mới cần tạo thì trả về []\nreturn out.length ? out : [];\n"
+      },
+      "name": "Check Data Existence",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        160
+      ],
+      "id": "ad4318a5-ff8f-437d-92b9-e425e3345e32",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "doctype": "Territory",
+        "operation": "create",
+        "parameters": "={\n  \"territory_name\": \"{{ $json.name }}\",\n  \"custom_territory_code\": \"{{ $json.dms_code }}\"\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        224,
+        256
+      ],
+      "id": "75d62572-c826-4e16-b113-9b1f7ad648b2",
+      "name": "Create Territory",
+      "alwaysOutputData": true,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Frappe Custom Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "\nreturn [{ json: $json }];"
+      },
+      "name": "Preserve Data",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "66b2a8b6-ec56-4c63-a6e3-89058661e081",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "mode": "mergeByIndex",
+        "join": "inner"
+      },
+      "name": "Merge Data Info",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 1,
+      "position": [
+        224,
+        64
+      ],
+      "id": "15de143c-5aa0-4df6-ab96-f6f18ee20656"
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Integration Logs",
+        "operation": "create",
+        "parameters": "{\n\n  \"sync_type\": \"Territory\",\n  \"records_processed\": \"{{ $items().length }}\",\n  \"status\": \"Đồng bộ dữ liệu DMS Territory thành công\",\n  \"log_message\": \"\"\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        448,
+        64
+      ],
+      "id": "7e02a424-8297-4a92-93a5-9ca33830fb7d",
+      "name": "Write Logs To ERPNEXT",
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Frappe Custom Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-backup",
+  "repo_owner": "MBW-Digital",
+  "repo_path": "sinhthaihcm/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-09-22T10:21:05.288Z",
+      "updatedAt": "2025-09-22T10:21:05.288Z",
+      "role": "workflow:owner",
+      "workflowId": "XMtw6ZAFfpl8gOvC",
+      "projectId": "NLp1g7OOFWKDmygg"
+    }
+  ],
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-09-09T08:58:51.547Z",
+      "updatedAt": "2025-09-09T08:58:51.547Z",
+      "id": "neaSaDNALEghkloE",
+      "name": "MBW DMS"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-22T10:21:14.260Z",
+  "versionId": "8c326c18-3d60-4559-9434-52fc7930056d"
+}
