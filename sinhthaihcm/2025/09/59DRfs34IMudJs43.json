@@ -1,0 +1,513 @@
+{
+  "active": false,
+  "connections": {
+    "Check Data Existence": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Data Exists": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Kiểm tra loại kho NPP/Công ty",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get Warehouse in MobiworkDMS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Warehouse in MobiworkDMS": {
+      "main": [
+        [
+          {
+            "node": "Warehouse",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Warehouse": {
+      "main": [
+        [
+          {
+            "node": "Check Data Existence",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kiểm tra xem dữ liệu có tồn": {
+      "main": [
+        [
+          {
+            "node": "Kiểm tra công ty đã tồn tại",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lấy công ty trong ERPNext": {
+      "main": [
+        [
+          {
+            "node": "Kiểm tra xem dữ liệu có tồn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Thêm mới nhà phân phối": {
+      "main": [
+        [
+          {
+            "node": "Create Warehouse NPP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kiểm tra loại kho NPP/Công ty": {
+      "main": [
+        [
+          {
+            "node": "Lấy công ty trong ERPNext",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Warehouse Comapny",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kiểm tra công ty đã tồn tại": {
+      "main": [
+        [
+          {
+            "node": "Create Warehouse NPP",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Thêm mới nhà phân phối",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SplitInBatches": {
+      "main": [
+        [
+          {
+            "node": "IF Data Exists",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Write Logs To ERPNEXT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Warehouse NPP": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Warehouse Comapny": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-09-27T05:33:30.213Z",
+  "id": "59DRfs34IMudJs43",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "[DMS] Đồng bộ dữ liệu Kho Hàng DMS -> ERPNext",
+  "nodes": [
+    {
+      "parameters": {
+        "functionCode": "// Node: Check Data Existence (Final Version)\n\n// 1. Chuẩn hóa dữ liệu từ DMS\nfunction normalizeDms(d) {\n  const ma = (d.ma || d.ma_kho || '').trim();\n  const ten = (d.ten || d.ten_kho || '').trim();\n  const company = (d.npp || d.ma_don_vi || '').trim() || 'Default Company';\n  const parent = d.ma_khu_vuc || null;\n  const address = d.dia_chi || '';\n\n  // Chuẩn hóa trạng thái (0 = active, 1 = disabled)\n  let disabled = 0;\n  if (typeof d.trang_thai === 'boolean') {\n    disabled = d.trang_thai ? 0 : 1;\n  } else if (typeof d.trang_thai === 'number') {\n    disabled = d.trang_thai === 1 ? 0 : 1;\n  } else if (typeof d.trang_thai === 'string') {\n    disabled = ['1', 'true'].includes(d.trang_thai.toLowerCase()) ? 0 : 1;\n  }\n\n  return { ma, ten, company, parent, address, disabled, raw: d };\n}\n\n// 2. Lấy dữ liệu DMS và loại bỏ kho nhân viên\n//    ⚠️ Bỏ qua tất cả các record có loai_kho = \"Kho nhân viên\" (case-insensitive)\nconst dmsRaw = $node['Get Warehouse in MobiworkDMS'].json.data || [];\nconst dmsData = dmsRaw.filter(\n  d => d.ma && (!d.loai_kho || d.loai_kho.trim().toLowerCase() !== 'kho nhân viên')\n);\n\n// 3. Lấy dữ liệu ERPNext\nconst erpData = Array.isArray($json) ? $json : (Array.isArray($json.data) ? $json.data : []);\n\n// 4. Danh sách mã ERP (uppercase để so sánh)\nconst erpCodes = erpData\n  .map(e => (e.custom_warehouse_code || '').toUpperCase().trim())\n  .filter(Boolean);\n\n// 5. Chuẩn hóa DMS và gắn cờ isExists\nreturn dmsData\n  .map(normalizeDms)\n  .map(x => ({\n    json: {\n      isExists: erpCodes.includes(x.ma.toUpperCase()), // true nếu đã tồn tại trong ERP\n      warehouse_code: x.ma,\n      warehouse_name: x.ten,\n      company: x.company,\n      parent_warehouse: x.parent,\n      address: x.address,\n      disabled: x.disabled,\n      raw_dms: x.raw\n    }\n  }));\n"
+      },
+      "name": "Check Data Existence",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        -448,
+        144
+      ],
+      "id": "5b4c12d6-1b54-4bc4-9e30-705b94ca0347",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json['isExists'] }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "name": "IF Data Exists",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        0,
+        144
+      ],
+      "id": "741d2916-9820-4dcf-a9d1-81fc06734bf9",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Integration Logs",
+        "operation": "create",
+        "parameters": "{\n\n  \"sync_type\": \"Warehouse\",\n  \"records_processed\": \"2\",\n  \"status\": \"Success\",\n  \"log_message\": \"123\"\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -48
+      ],
+      "id": "2fcf26d6-5718-4df2-ada2-aaa3d3c9a30b",
+      "name": "Write Logs To ERPNEXT",
+      "executeOnce": true,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Sinh Thái ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1120,
+        144
+      ],
+      "id": "42552da3-9e57-406a-923f-50131f9a4a25",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1568,
+        264
+      ],
+      "id": "36531ebc-4408-46bb-977c-8dcd61a35564",
+      "name": "Wait",
+      "webhookId": "0bfc27be-e90b-4d9c-aaa7-9cbebfb257ce"
+    },
+    {
+      "parameters": {
+        "resource": "categoriesWarehouse",
+        "additionalFields": {}
+      },
+      "type": "CUSTOM.mbwdmsCustom",
+      "typeVersion": 1,
+      "position": [
+        -896,
+        144
+      ],
+      "id": "7d0a81fd-316b-4015-aac1-2da2dba5d92d",
+      "name": "Get Warehouse in MobiworkDMS",
+      "credentials": {
+        "MBWDMSCustomApi": {
+          "id": "CL08GJJwCUpHDevr",
+          "name": "Cozy DMS Open APIs"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "doctype": "Warehouse",
+        "fields": "warehouse_name,custom_warehouse_code,name"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -672,
+        144
+      ],
+      "id": "00b214b9-a0a3-486e-97c4-be8bb52c39f4",
+      "name": "Warehouse",
+      "alwaysOutputData": true,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Sinh Thái ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const arr = $items('Lấy công ty trong ERPNext'); \n\n// Kiểm tra xem item đầu tiên có field name không\nconst first = arr[0]?.json || {};\n\nreturn [{\n  json: {\n    exists: !!first.name,   // true nếu có giá trị name\n    existed_name: first.name || null,\n    data: arr[0]?.json || null,\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        -24
+      ],
+      "id": "e9970cb6-89de-43aa-b43e-cadb93d1fb12",
+      "name": "Kiểm tra xem dữ liệu có tồn"
+    },
+    {
+      "parameters": {
+        "doctype": "Company",
+        "operation": "getById",
+        "recordId": "={{ $json.raw_dms.npp_name }}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        448,
+        -24
+      ],
+      "id": "6c7a1023-0a7e-4869-8864-18589c14ba4c",
+      "name": "Lấy công ty trong ERPNext",
+      "alwaysOutputData": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Sinh Thái ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "doctype": "Company",
+        "operation": "create",
+        "parameters": "={\n  \"abbr\": \"{{ $('SplitInBatches').item.json.raw_dms.npp }}\",\n  \"company_name\": \"{{ $('SplitInBatches').item.json.raw_dms.npp_name }}\",\n  \"default_currency\": \"VND\",\n  \"country\": \"Vietnam\"\n}  "
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        -96
+      ],
+      "id": "f647dba1-15ff-448a-bd75-4e912bf0905e",
+      "name": "Thêm mới nhà phân phối",
+      "alwaysOutputData": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Sinh Thái ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $('SplitInBatches').item.json.raw_dms.nhom_kho }}",
+              "value2": "npp"
+            }
+          ]
+        }
+      },
+      "name": "Kiểm tra loại kho NPP/Công ty",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        224,
+        72
+      ],
+      "id": "af7460f7-1009-4162-8a9d-abd41325cbd9",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "32c56d2b-fe41-4163-bc63-f272cfcea78a",
+              "leftValue": "={{ $json.exists }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        896,
+        -24
+      ],
+      "id": "8b82626c-897f-45bb-a9f4-147c739f0288",
+      "name": "Kiểm tra công ty đã tồn tại",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {
+          "reset": false
+        }
+      },
+      "id": "3fc6b038-ddd9-49f1-b57b-502958ad4f88",
+      "name": "SplitInBatches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        -224,
+        144
+      ],
+      "typeVersion": 2,
+      "notesInFlow": true
+    },
+    {
+      "parameters": {
+        "doctype": "Warehouse",
+        "operation": "create",
+        "parameters": "={\n  \"warehouse_name\": \"{{ $('SplitInBatches').item.json.warehouse_name }}\",\n  \"custom_warehouse_code\": \"{{ $('SplitInBatches').item.json.warehouse_code }}\",\n  \"company\": \"{{ $('SplitInBatches').item.json.raw_dms.npp_name }}\",\n  \"parent_warehouse\": \"{{ $('SplitInBatches').item.json.parent_warehouse || '' }}\",\n  \"address\": \"\",\n  \"disabled\": 0\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        1344,
+        -24
+      ],
+      "id": "cd266863-8eaa-431d-83c3-9fca2ff44966",
+      "name": "Create Warehouse NPP",
+      "alwaysOutputData": true,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Sinh Thái ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "doctype": "Warehouse",
+        "operation": "create",
+        "parameters": "={\n  \"warehouse_name\": \"{{ $('SplitInBatches').item.json.warehouse_name }}\",\n  \"custom_warehouse_code\": \"{{ $('SplitInBatches').item.json.warehouse_code }}\",\n  \"parent_warehouse\": \"{{ $('SplitInBatches').item.json.parent_warehouse || '' }}\",\n  \"address\": \"\",\n  \"disabled\": 0\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        1344,
+        192
+      ],
+      "id": "50b795c5-e915-4033-91ec-2ddabe1b5ec8",
+      "name": "Create Warehouse Comapny",
+      "alwaysOutputData": true,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Sinh Thái ERPNext"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-backup",
+  "repo_owner": "MBW-Digital",
+  "repo_path": "sinhthaihcm/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-09-27T05:33:30.213Z",
+      "updatedAt": "2025-09-27T05:33:30.213Z",
+      "role": "workflow:owner",
+      "workflowId": "59DRfs34IMudJs43",
+      "projectId": "NLp1g7OOFWKDmygg"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-27T05:33:30.213Z",
+  "versionId": "275b17e4-eac6-4785-9c87-5391c80c2c0e"
+}
