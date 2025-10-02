@@ -1,0 +1,74 @@
+{
+  "active": true,
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-10-01T06:28:04.283Z",
+  "id": "69ISEHVLtRUZGKY2",
+  "isArchived": false,
+  "meta": null,
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "b7e38f5d-184e-4f94-8cc0-fdca0e7422a9",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -336,
+        -32
+      ],
+      "id": "41c1150d-3c02-4dd6-aad2-65cfef5d8e0c",
+      "name": "Webhook",
+      "webhookId": "b7e38f5d-184e-4f94-8cc0-fdca0e7422a9"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        -48,
+        -32
+      ],
+      "id": "94349156-dca8-4c56-b060-93ffb87fd6cc",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-backup",
+  "repo_owner": "MBW-Digital",
+  "repo_path": "sinhthaihcm/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-10-01T06:28:04.283Z",
+      "updatedAt": "2025-10-01T06:28:04.283Z",
+      "role": "workflow:owner",
+      "workflowId": "69ISEHVLtRUZGKY2",
+      "projectId": "NLp1g7OOFWKDmygg"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-10-01T06:34:23.822Z",
+  "versionId": "4e0b9402-b0c6-4cef-8bc5-04498aa3ab47"
+}
