@@ -1,0 +1,140 @@
+{
+  "active": true,
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Format Data Customer Before Insert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Customer To Queue": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook Customer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Data Customer Before Insert": {
+      "main": [
+        [
+          {
+            "node": "Add Customer To Queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-10-06T01:57:33.448Z",
+  "id": "r474tM0GiLQYxxfW",
+  "isArchived": false,
+  "meta": null,
+  "name": "Webhook DMS Listen - Khách Hàng",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "0a599411-6dbb-4a27-bbc4-818b974e3d84",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -432,
+        -128
+      ],
+      "id": "7aab87f0-d23a-4c49-bcac-18172df33d1b",
+      "name": "Webhook",
+      "webhookId": "0a599411-6dbb-4a27-bbc4-818b974e3d84"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"status\": \"ok\",\n  \"message\": \"Customer has add to Queue\"\n}",
+        "options": {}
+      },
+      "id": "ba11b96a-302a-4bf3-96e5-344e16d25a81",
+      "name": "Respond to Webhook Customer",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        -128
+      ]
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "operation": "create",
+        "parameters": "={\n  \"reference_doctype\": \"Customer\",\n  \"reference_name\": \"{{ $json.reference_name}}\",\n  \"operation\": \"Create\",\n  \"retry_count\": 0,\n  \"status\": \"Pending\",\n  \"payload\": {{ $json.payload_str}},\n  \"log_message\": \"Customer create from Webhook MBW DMS\",\n  \"create_date\": \"\",\n  \"sync_time\": null,\n  \"source_data\": \"MBW DMS\"\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        16,
+        -128
+      ],
+      "id": "e1c7d193-40e5-4267-8d22-6bf77f068201",
+      "name": "Add Customer To Queue",
+      "alwaysOutputData": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ==============================\n// Lấy danh sách khách hàng từ Webhook\n// ==============================\nconst customers = items[0].json.body || [];\n\n// Kiểm tra dữ liệu hợp lệ\nif (!Array.isArray(customers) || customers.length === 0) {\n  return [{ json: { error: \"Không có dữ liệu khách hàng trong webhook\" } }];\n}\n\n// ==============================\n// Duyệt từng khách hàng và chuẩn hóa dữ liệu\n// ==============================\nreturn customers.map(customer => {\n\n  // === 1. Chuẩn hóa dữ liệu cơ bản ===\n  const customerCode = (customer.makh || \"\").trim();\n  const customerName = (customer.tenkh || \"\").trim();\n  const groupPath = (customer.nhom_kh || \"\").trim();\n\n  const statusValue = (customer.trang_thai_kh || \"\").toLowerCase();\n  const status = statusValue === \"hoạt động\" || statusValue === \"active\" ? \"Active\" : \"Disabled\";\n\n  const creditLimit = Number(customer.han_muc_cn || 0);\n\n  // === 2. Thông tin liên hệ (Contact) ===\n  const contact = {\n    first_name: (customer.nguoi_lien_he || \"\").trim(),\n    designation: (customer.chuc_vu || \"\").trim(),\n    phone: (customer.sdt || \"\").trim(),\n    email_id: (customer.email || \"\").trim(),\n    birthday:\n      customer.sinh_nhat && customer.sinh_nhat !== \"1970-01-01T00:00:00.000Z\"\n        ? customer.sinh_nhat\n        : null\n  };\n\n  // === 3. Địa chỉ (Address) ===\n  const address = {\n    address_primary: (customer.dia_chi || \"\").trim(),\n    address_shipping: (customer.dc_giao_hangnh || \"\").trim(),\n    billing_address: (customer.dia_chi_xuat_hoa_don || \"\").trim(),\n    city: \"\",\n    country: \"Vietnam\"\n  };\n\n  // === 4. Payload đầy đủ cho ERPNext ===\n  const payload = {\n    doctype: \"Customer\",\n\n    // Thông tin chính\n    customer_code: customerCode,\n    customer_name: customerName,\n    customer_group_path: groupPath,\n    customer_type: (customer.loai_kh || \"\").trim(),\n    status: status,\n    credit_limit: creditLimit,\n    custom_channel: (customer.kenh || \"\").trim(),\n\n    // Thông tin xuất hóa đơn & phân loại\n    ma_khach_hang_xuat_hoa_don: (customer.ma_khach_hang_xuat_hoa_don || \"\").trim(),\n    ho_va_ten_khach_hang: (customer.ho_va_ten_khach_hang || \"\").trim(),\n    phan_loai_khach_hang_ma: (customer.phan_loai_khach_hang_ma || \"\").trim(),\n    phan_loai_khach_hang: (customer.phan_loai_khach_hang || \"\").trim(),\n    dia_chi_xuat_hoa_don: (customer.dia_chi_xuat_hoa_don || \"\").trim(),\n    mo_ta_kmxuat_hoa_don_ma: (customer.mo_ta_kmxuat_hoa_don_ma || \"\").trim(),\n    mo_ta_kmxuat_hoa_don: (customer.mo_ta_kmxuat_hoa_don || \"\").trim(),\n\n    // Địa chỉ và liên hệ\n    address,\n    contact,\n\n    // Metadata\n    metadata: {\n      created_by: (customer.nguoi_tao || \"\").trim(),\n      updated_by: (customer.nguoi_sua || \"\").trim(),\n      last_updated_at: customer.ngay_cap_nhat || new Date().toISOString()\n    }\n  };\n\n  // === 5. Trả về dữ liệu chuẩn cho ERPNext Queue ===\n  return {\n    json: {\n      payload_str: JSON.stringify(payload),\n      reference_doctype: \"Customer\",\n      reference_name: customerCode,\n      operation: \"Create\",\n      retry_count: 0,\n      status: \"Pending\",\n      log_message: \"Auto-created for Customer operation\",\n      create_date: new Date().toISOString(),\n      sync_time: null,\n      source_data: \"MBW DMS\"\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -208,
+        -128
+      ],
+      "id": "3269fbfb-83b3-4f20-8611-9d0ac69ab476",
+      "name": "Format Data Customer Before Insert"
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-backup",
+  "repo_owner": "MBW-Digital",
+  "repo_path": "sinhthaihcm/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-10-06T01:57:33.448Z",
+      "updatedAt": "2025-10-06T01:57:33.448Z",
+      "role": "workflow:owner",
+      "workflowId": "r474tM0GiLQYxxfW",
+      "projectId": "NLp1g7OOFWKDmygg"
+    }
+  ],
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-09-03T07:48:49.315Z",
+      "updatedAt": "2025-09-03T07:48:49.315Z",
+      "id": "HmMyDMy8FTsYQkDm",
+      "name": "ERPNext"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2025-10-06T03:08:07.882Z",
+  "versionId": "97c5125c-3e6b-4ab0-8715-989b9652cd01"
+}
