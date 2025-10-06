@@ -1,0 +1,444 @@
+{
+  "active": false,
+  "connections": {
+    "Check Data Existence": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Data Exists": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Sale Employee",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Sale Employee",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SplitInBatches": {
+      "main": [
+        [
+          {
+            "node": "IF Data Exists",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Write Logs To ERPNEXT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sale Employee": {
+      "main": [
+        [
+          {
+            "node": "Check Data Existence",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Sale Employee": {
+      "main": [
+        [
+          {
+            "node": "Kiểm tra chức danh",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Write Logs Create Employee",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kiểm tra chức danh": {
+      "main": [
+        [
+          {
+            "node": "Create Sales Person",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Sales Person": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Write Logs Create Sale Person",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write Logs Create Employee": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write Logs Create Sale Person": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-10-06T03:34:29.956Z",
+  "id": "WU7XJjPchNkmCvet",
+  "isArchived": false,
+  "meta": null,
+  "name": "[DMS] Đồng bộ dữ liệu Nhân viên ERPNext  -> DMS",
+  "nodes": [
+    {
+      "parameters": {
+        "functionCode": "// ========================\n// 1. Hàm format ngày -> YYYY-MM-DD\n// ========================\nfunction formatDate(date = new Date()) {\n  return date.toISOString().split('T')[0];\n}\n\n// ========================\n// 2. Chuẩn hóa dữ liệu từ DMS\n// ========================\nfunction normalizeDms(d) {\n  const ma = (d.ma || d.ma_nv || d.name || '').trim();            // Mã nhân viên từ DMS\n  const ten = (d.ten || d.ten_nv || d.employee_name || '').trim(); // Tên nhân viên\n  const company = 'Default Company';                               // Nếu cần có thể map theo đơn vị trong DMS\n  const address = (d.current_address || d.dia_chi || '').trim();\n\n  // === Xử lý first_name ===\n  const nameParts = ten.split(' ').filter(Boolean);\n  const first_name = nameParts.length > 1 \n    ? nameParts[nameParts.length - 1]   // Lấy phần cuối cùng nếu có khoảng trắng\n    : ten;                               // Nếu không có khoảng trắng -> dùng nguyên tên\n\n  // === Chuẩn hóa giới tính ===\n  let gender = (d.gioi_tinh || '').trim().toLowerCase();\n\n  if (!gender || gender === 'n/a') {\n    gender = 'Male'; // Mặc định nếu không có dữ liệu hoặc N/A\n  } else if (gender === 'nam') {\n    gender = 'Male';\n  } else if (gender === 'nữ' || gender === 'nu') {\n    gender = 'Female';\n  } else {\n    gender = 'Male'; // Fallback an toàn\n  }\n\n  // Chuẩn hóa trạng thái (active/disabled)\n  let disabled = 0; // Mặc định = active\n  if (typeof d.trang_thai === 'boolean') {\n    disabled = d.trang_thai ? 0 : 1;\n  } else if (typeof d.trang_thai === 'number') {\n    disabled = d.trang_thai === 1 ? 0 : 1;\n  } else if (typeof d.trang_thai === 'string') {\n    disabled = ['1', 'true', 'active'].includes(d.trang_thai.toLowerCase()) ? 0 : 1;\n  }\n\n  return { \n    ma, \n    ten, \n    first_name, \n    gender, \n    company, \n    address, \n    disabled, \n    raw: d \n  };\n}\n\n// ========================\n// 3. Lấy dữ liệu từ API DMS\n// ========================\nconst apiResponse = $node['Get Sale Employee in MobiworkDMS'].json;\n\n// API trả về dạng mảng cấp 1 → lấy phần tử đầu tiên\nconst firstItem = Array.isArray(apiResponse) ? apiResponse[0] : apiResponse;\n\n// Lấy danh sách nhân viên từ key \"data\"\nconst dmsRaw = firstItem?.data || [];\n\n// ========================\n// 4. Lọc dữ liệu DMS không hợp lệ\n// ========================\nconst dmsData = dmsRaw.filter(d => d.ma || d.ma_nv || d.name);\n\n// ========================\n// 5. Lấy dữ liệu ERPNext\n// ========================\nconst erpData = Array.isArray($json) ? $json : (Array.isArray($json.data) ? $json.data : []);\n\n// Lấy danh sách mã nhân viên ERPNext từ field custom_dms_employee_code\nconst erpCodes = erpData\n  .map(e => (e.custom_dms_employee_code || '').toUpperCase().trim())\n  .filter(Boolean);\n\n// ========================\n// 6. Chuẩn hóa dữ liệu DMS -> lọc chỉ những bản ghi chưa tồn tại\n// ========================\nreturn dmsData\n  .map(normalizeDms)\n  .filter(x => !erpCodes.includes(x.ma.toUpperCase())) // ❗ Chỉ lấy nhân viên chưa tồn tại\n  .map(x => ({\n    json: {\n      isExists: false,                // Luôn là false vì đã lọc ở bước trên\n      employee_code: x.ma,\n      employee_name: x.ten,\n      first_name: x.first_name,\n      gender: x.gender,               // Giới tính chuẩn hóa\n      company: x.company,\n      address: x.address,\n      disabled: x.disabled,\n      date_of_birth: formatDate(),    // Ngày sinh = ngày hiện tại\n      date_of_joining: formatDate(),  // Ngày vào làm = ngày hiện tại\n      raw_dms: x.raw\n    }\n  }));\n"
+      },
+      "name": "Check Data Existence",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        -1536,
+        240
+      ],
+      "id": "f2f84f17-426d-4e0b-a10a-cd89fe986418",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json['isExists'] }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "name": "IF Data Exists",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -992,
+        208
+      ],
+      "id": "314605a9-8c97-436b-b01e-d91b91bb1fef",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Integration Logs",
+        "operation": "create",
+        "parameters": "{\n  \"sync_type\": \"Sale Employees\",\n  \"records_processed\": \"{{ $('Check Data Existence').all().length}}\",\n  \"status\": \"Success\",\n  \"log_message\": \"Đồng bộ dữ liệu Sale Employees thành công\"\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -992,
+        32
+      ],
+      "id": "f04dcdeb-af9a-4645-add0-377c11be7753",
+      "name": "Write Logs To ERPNEXT",
+      "executeOnce": true,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Sinh Thái ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -2080,
+        240
+      ],
+      "id": "f450b678-18ec-402a-aa83-8a5d0ecab27f",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "amount": 0.2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -96,
+        304
+      ],
+      "id": "e39d5609-3099-4abc-b205-c11d05fb7813",
+      "name": "Wait",
+      "webhookId": "0bfc27be-e90b-4d9c-aaa7-9cbebfb257ce"
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {
+          "reset": false
+        }
+      },
+      "id": "42f9ec4a-82e2-41c1-bc99-4e7fc3430ad8",
+      "name": "SplitInBatches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        -1200,
+        240
+      ],
+      "typeVersion": 2,
+      "notesInFlow": true
+    },
+    {
+      "parameters": {
+        "doctype": "Employee",
+        "fields": "employee_name,name,custom_dms_employee_code,gender,cell_number,current_address"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -1808,
+        240
+      ],
+      "id": "eecb4062-c4c8-4b0d-9beb-f699db65a9c0",
+      "name": "Sale Employee",
+      "alwaysOutputData": true,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Sinh Thái ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "doctype": "Employee",
+        "operation": "create",
+        "parameters": "={\n  \"employee_name\": \"{{ $('SplitInBatches').item.json.employee_name }}\",\n  \"custom_dms_employee_code\": \"{{ $('SplitInBatches').item.json.employee_code }}\",\n  \"gender\": \"{{ $json.gender }}\",\n  \"cell_number\": \"{{ $('SplitInBatches').item.json.raw_dms.so_dien_thoai || '' }}\",\n  \"current_address\": \"{{ $('SplitInBatches').item.json.address || '' }}\",\n  \"date_of_birth\": \"{{ $('SplitInBatches').item.json.date_of_birth }}\",\n  \"date_of_joining\": \"{{ $('SplitInBatches').item.json.date_of_joining }}\",\n  \"first_name\": \"{{ $('SplitInBatches').item.json.first_name }}\"\n}\n"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -816,
+        336
+      ],
+      "id": "28049e8c-28fd-4bea-93a5-ab2c9266d8ab",
+      "name": "Create Sale Employee",
+      "alwaysOutputData": false,
+      "notesInFlow": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Sinh Thái ERPNext"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b5d8e92c-86c7-449b-97f4-1dda74a9c401",
+              "leftValue": "={{ $('IF Data Exists').item.json.raw_dms.chuc_danh }}",
+              "rightValue": "Nhân viên",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "2766d8db-f3d8-4ac1-ae3f-9fa0c6d5194a",
+              "leftValue": "={{ $('IF Data Exists').item.json.raw_dms.chuc_danh }}",
+              "rightValue": "Giám sát",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -592,
+        80
+      ],
+      "id": "26e6ef67-83e8-46ed-b2a8-cea469a42e55",
+      "name": "Kiểm tra chức danh"
+    },
+    {
+      "parameters": {
+        "doctype": "Sales Person",
+        "operation": "create",
+        "parameters": "={\n  \"sales_person_name\": \"{{ $json.employee_name + '_' + $json.name }}\",\n  \"employee\": \"{{ $json.name }}\"\n}\n"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -336,
+        0
+      ],
+      "id": "d2311396-07b9-4a7d-9a2a-fa21608363db",
+      "name": "Create Sales Person",
+      "alwaysOutputData": true,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Sinh Thái ERPNext"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Integration Logs",
+        "operation": "create",
+        "parameters": "{\n  \"sync_type\": \"Sale Employees\",\n  \"records_processed\": \"1\",\n  \"status\": \"Failed\",\n  \"log_message\": \"\"\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -576,
+        336
+      ],
+      "id": "1017e378-ad9c-4d06-86a0-60958133ef85",
+      "name": "Write Logs Create Employee",
+      "executeOnce": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Sinh Thái ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Integration Logs",
+        "operation": "create",
+        "parameters": "{\n  \"sync_type\": \"Sale Person\",\n  \"records_processed\": \"1\",\n  \"status\": \"Failed\",\n  \"log_message\": \"\"\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -96,
+        -16
+      ],
+      "id": "83f043c3-aa8e-472e-a6f5-208745936332",
+      "name": "Write Logs Create Sale Person",
+      "executeOnce": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Sinh Thái ERPNext"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-backup",
+  "repo_owner": "MBW-Digital",
+  "repo_path": "sinhthaihcm/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-10-06T03:34:29.956Z",
+      "updatedAt": "2025-10-06T03:34:29.956Z",
+      "role": "workflow:owner",
+      "workflowId": "WU7XJjPchNkmCvet",
+      "projectId": "NLp1g7OOFWKDmygg"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-10-06T03:52:12.448Z",
+  "versionId": "58b4fcc2-1459-44dd-ba1d-25b1ecb20ddf"
+}
