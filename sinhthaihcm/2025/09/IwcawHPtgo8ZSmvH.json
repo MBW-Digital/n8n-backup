@@ -1,0 +1,721 @@
+{
+  "active": true,
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Item To Queue": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook Item",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Webhook Customer": {
+      "main": [
+        []
+      ]
+    },
+    "Add Customer To Queue": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook Customer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Sale Order To Queue": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook Sale Order",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Format Data Customer Before Insert",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Format Data Item Before Insert",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Check Order Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Order Type": {
+      "main": [
+        [
+          {
+            "node": "Kiểm tra dữ liệu ĐH tồn tại?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Data Customer Before Insert": {
+      "main": [
+        [
+          {
+            "node": "Add Customer To Queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Data Item Before Insert": {
+      "main": [
+        [
+          {
+            "node": "Add Item To Queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kiểm tra dữ liệu ĐH tồn tại?": {
+      "main": [
+        [
+          {
+            "node": "Kiểm tra xem dữ liệu DH",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kiểm tra xem dữ liệu DH": {
+      "main": [
+        [
+          {
+            "node": "Kiểm tra tồn tại DH",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kiểm tra tồn tại DH": {
+      "main": [
+        [
+          {
+            "node": "Xóa bản ghi DH",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Add Sale Order To Queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Xóa bản ghi DH": {
+      "main": [
+        [
+          {
+            "node": "Add Sale Order To Queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-09-12T02:37:10.736Z",
+  "id": "IwcawHPtgo8ZSmvH",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Webhook DMS Listen Event",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "7072f742-2fb4-4000-b8ef-2e3a1ea5c667",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -448,
+        -48
+      ],
+      "id": "92c3b81d-e499-4e4a-b68f-74ed1d009460",
+      "name": "Webhook",
+      "webhookId": "7072f742-2fb4-4000-b8ef-2e3a1ea5c667"
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "operation": "create",
+        "parameters": "={\n  \"reference_doctype\": \"Item\",\n  \"reference_name\": \"{{ $json.reference_name }}\",\n  \"operation\": \"Create\",\n  \"retry_count\": 0,\n  \"status\": \"Pending\",\n  \"payload\": {{ $json.payload_str }},\n  \"log_message\": \"Item create from Webhook MBW DMS\",\n  \"create_date\": \"\",\n  \"sync_time\": null,\n  \"source_data\": \"MBW DMS\"\n}\n"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        224,
+        -48
+      ],
+      "id": "24fccd75-f12a-4771-a7c9-78efa36bad5c",
+      "name": "Add Item To Queue",
+      "alwaysOutputData": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Sinh Thái ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"status\": \"ok\",\n  \"message\": \"Item has insert Queue\"\n}",
+        "options": {}
+      },
+      "id": "3c59292f-4b93-4ce2-bde1-915f0e0649ba",
+      "name": "Respond to Webhook Item",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        448,
+        -48
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"status\": \"ok\",\n  \"message\": \"Customer has add to Queue\"\n}",
+        "options": {}
+      },
+      "id": "1f33a4ff-7f0d-43cc-9c50-3e5ec59b2ce6",
+      "name": "Respond to Webhook Customer",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        448,
+        -240
+      ]
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "operation": "create",
+        "parameters": "={\n  \"reference_doctype\": \"Customer\",\n  \"reference_name\": \"{{ $json.reference_name}}\",\n  \"operation\": \"Create\",\n  \"retry_count\": 0,\n  \"status\": \"Pending\",\n  \"payload\": {{ $json.payload_str}},\n  \"log_message\": \"Customer create from Webhook MBW DMS\",\n  \"create_date\": \"\",\n  \"sync_time\": null,\n  \"source_data\": \"MBW DMS\"\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        224,
+        -240
+      ],
+      "id": "38ace10b-9630-4014-86c5-78069479468f",
+      "name": "Add Customer To Queue",
+      "alwaysOutputData": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Sinh Thái ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "operation": "create",
+        "parameters": "={\n  \"reference_doctype\": \"{{ $('Check Order Type').item.json.body.data[0].reference_doctype }}\",\n  \"reference_name\": \"{{ $('Check Order Type').item.json.body.data[0].ma_phieu }}\",\n  \"operation\": \"Create\",\n  \"retry_count\": 0,\n  \"status\": \"Pending\",\n  \"payload\": {{ JSON.stringify($('Check Order Type').item.json.body.data[0] || {}) }},\n  \"log_message\": \"{{ $('Check Order Type').item.json.body.data[0].reference_doctype }} create from Webhook MBW DMS\",\n  \"create_date\": \"\",\n  \"sync_time\": null,\n  \"source_data\": \"MBW DMS\"\n}\n"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        1072,
+        368
+      ],
+      "id": "d3ffe634-8208-43b2-8010-91ad3a4d2359",
+      "name": "Add Sale Order To Queue",
+      "alwaysOutputData": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Sinh Thái ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"status\": \"ok\",\n  \"message\": \"Sale Order has insert Queue\"\n}",
+        "options": {}
+      },
+      "id": "cfb6613f-e3ee-4a25-aa1b-2bca33042958",
+      "name": "Respond to Webhook Sale Order",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1344,
+        368
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{$json['body']['type']}}",
+                    "rightValue": "=DMS_Customers",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "2a5fdb3f-54fb-4414-b3df-2ecc6762f233"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "DMS_Customers"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "9d789fd9-c24a-4aea-8e06-2964706d3c63",
+                    "leftValue": "={{$json['body']['type']}}",
+                    "rightValue": "DMS_Items",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "DMS_Items"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "6c046d38-9e61-4f2a-a450-78648f73bbe3",
+                    "leftValue": "={{$json['body']['type']}}",
+                    "rightValue": "DMS_Ban_hang",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "DMS_Ban_hang"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -224,
+        -64
+      ],
+      "id": "842d910d-c976-42d3-b004-67fd4be0f839",
+      "name": "Switch",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "jsCode": "// Map loai_don_hang sang reference_doctype\nconst mapLoaiDonHang = {\n  0: \"Sale Order Return\",\n  1: \"Sale Order\",\n  2: \"Sale Invoice\"\n};\n\nreturn items.map(item => {\n  const data = item.json.body.data[0];\n  \n  // Thêm field reference_doctype\n  return {\n    json: {\n      ...item.json,\n      body: {\n        ...item.json.body,\n        data: [\n          {\n            ...data,\n            reference_doctype: mapLoaiDonHang[data.loai_don_hang] || \"Sale Order\"\n          }\n        ]\n      }\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        352
+      ],
+      "id": "ae822e3c-5b52-4e47-9a60-3b4204cd5336",
+      "name": "Check Order Type"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Lấy danh sách khách hàng từ Webhook\nconst customers = items[0].json.body?.data || [];\n\n// Map dữ liệu\nreturn customers.map(customer => {\n\n  // === 1. Chuẩn hóa dữ liệu cơ bản ===\n  const customerCode = (customer.makh || \"\").trim();\n  const customerName = (customer.tenkh || \"\").trim();\n\n  const groupPath = (customer.nhom_kh || \"\").trim();\n  const status = (customer.trang_thai_kh || \"\").toLowerCase() === \"hoạt động\" ? \"Active\" : \"Disabled\";\n  const creditLimit = Number(customer.han_muc_cn || 0);\n\n  // === 2. Thông tin liên hệ (Contact) ===\n  const contact = {\n    first_name: (customer.nguoi_lien_he || \"\").trim(),\n    designation: (customer.chuc_vu || \"\").trim(),\n    phone: (customer.sdt || \"\").trim(),\n    email_id: (customer.email || \"\").trim(),\n    birthday: customer.sinh_nhat && customer.sinh_nhat !== \"1970-01-01T00:00:00.000Z\"\n      ? customer.sinh_nhat\n      : null\n  };\n\n  // === 3. Địa chỉ (Address) ===\n  const address = {\n    // Địa chỉ chính của khách hàng\n    address_primary: (customer.dia_chi || \"\").trim(),\n    // Địa chỉ giao hàng\n    address_Shipping: (customer.dc_giao_hangnh || \"\").trim(),\n    // Địa chỉ xuất hóa đơn\n    billing_address: (customer.dia_chi_xuat_hoa_don || \"\").trim(),\n    city: \"\",\n    country: \"Vietnam\"\n  };\n\n  // === 4. Payload đầy đủ cho ERPNext ===\n  const payload = {\n    doctype: \"Customer\",\n\n    // Thông tin chính\n    customer_code: customerCode,\n    customer_name: customerName,\n    customer_group_path: groupPath,\n    customer_type: (customer.loai_kh || \"\").trim(),\n    status: status,\n    credit_limit: creditLimit,\n    custom_channel: (customer.kenh || \"\").trim(),\n\n    // **Thông tin xuất hóa đơn & phân loại**\n    ma_khach_hang_xuat_hoa_don: (customer.ma_khach_hang_xuat_hoa_don || \"\").trim(),\n    ho_va_ten_khach_hang: (customer.ho_va_ten_khach_hang || \"\").trim(),\n    phan_loai_khach_hang_ma: (customer.phan_loai_khach_hang_ma || \"\").trim(),\n    phan_loai_khach_hang: (customer.phan_loai_khach_hang || \"\").trim(),\n    dia_chi_xuat_hoa_don: (customer.dia_chi_xuat_hoa_don || \"\").trim(),\n    mo_ta_kmxuat_hoa_don_ma: (customer.mo_ta_kmxuat_hoa_don_ma || \"\").trim(),\n    mo_ta_kmxuat_hoa_don: (customer.mo_ta_kmxuat_hoa_don || \"\").trim(),\n\n    // Địa chỉ và liên hệ\n    address,\n    contact,\n\n    // Metadata phục vụ kiểm tra\n    metadata: {\n      created_by: (customer.nguoi_tao || \"\").trim(),\n      updated_by: (customer.nguoi_sua || \"\").trim(),\n      last_updated_at: customer.ngay_cap_nhat || new Date().toISOString()\n    }\n  };\n\n  // === 5. Trả về dữ liệu đầy đủ ===\n  return {\n    json: {\n      \n\n      // Thêm thông tin chuẩn hóa cho ERPNext\n      payload_str: JSON.stringify(payload),\n      reference_doctype: \"Customer\",\n      reference_name: customerCode,\n      operation: \"Create\",\n      retry_count: 0,\n      status: \"Pending\",\n      log_message: \"Auto-created for Customer operation\",\n      create_date: new Date().toISOString(),\n      sync_time: null,\n      source_data: \"MBW DMS\"\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        -240
+      ],
+      "id": "a27886d9-8d58-41c9-8891-2a8bd916a963",
+      "name": "Format Data Customer Before Insert"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Lấy dữ liệu từ Webhook: body.data là array sản phẩm\nconst inputItems = $input.all()[0].json.body?.data || [];\n\n// Map dữ liệu thành format chuẩn\nreturn inputItems.map(product => {\n  // Chuẩn hóa nhóm hàng -> mảng\n  const groupPath = (product.nganh_hang || '')\n    .split('>')\n    .map(s => s.trim())\n    .filter(Boolean);\n\n  // VAT %\n  const vat = Number(product.vat || 0);\n\n  // Hệ số quy đổi (dvt_chan -> dvt_le)\n  const factor = Number(product.hsqd || product.hsgd || product.hsg || 1);\n\n  // Build payload\n  const payload = {\n    doctype: \"Item\",\n    item_code: (product.ma_sp || \"\").trim(),\n    item_name: (product.ten_sp || \"\").trim(),\n    brand: (product.nhan_hieu || \"\").trim(),\n    item_group_path: groupPath,\n    default_supplier: (product.nha_cung_cap || \"\").trim(),\n    stock_uom: (product.dvt_le || \"Nos\").trim(),\n    description: product.mo_ta || \"\",\n    is_stock_item: 1,\n    disabled: 0,\n\n    // Thông tin xuất hóa đơn\n    custom_invoice_item_name: product.ten_xuat_hoa_don || \"\",\n    custom_invoice_item_code: product.ma_xuat_hoa_don || \"\",\n\n    // Quy đổi đơn vị\n    uom_conversions: {\n      big_uom: product.dvt_chan || \"\",\n      small_uom: product.dvt_le || \"\",\n      factor\n    },\n\n    // Mã vạch\n    barcodes: product.ma_vach ? [{\n      barcode: String(product.ma_vach),\n      barcode_type: String(product.ma_vach).length === 13 ? \"EAN-13\" : \"Code128\"\n    }] : [],\n\n    // Giá bán & mua\n    prices: [\n      { price_list: \"Standard Buying\",    price_list_rate: Number(product.gia_nhap || product.gia_nhap_le || 0) },\n      { price_list: \"Retail Selling\",     price_list_rate: Number(product.gia_le || 0) },\n      { price_list: \"Wholesale Selling\",  price_list_rate: Number(product.gia_chan || 0) }\n    ].filter(p => p.price_list_rate > 0),\n\n    // Thuế\n    tax: { vat_percent: vat },\n\n    // Hình ảnh\n    images: Array.isArray(product.hinh_anh) ? product.hinh_anh.filter(Boolean) : []\n  };\n\n  return {\n    json: {\n      payload_str: JSON.stringify(payload), // ✅ Bắt buộc stringify\n      reference_doctype: \"Item\",\n      reference_name: payload.item_code,\n      operation: \"Create\",\n      retry_count: 0,\n      status: \"Pending\",\n      log_message: \"Auto-created for Item operation\",\n      create_date: new Date().toISOString(),\n      sync_time: null,\n      source_data: \"MBW DMS\"\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        -48
+      ],
+      "id": "8dab7ebd-b02d-4f8f-a1f4-09b328edd90b",
+      "name": "Format Data Item Before Insert"
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "operation": "find",
+        "query": "={\"reference_name\":\"{{ $json.body.data[0].ma_phieu }}\",\"reference_doctype\":\"Sale Order\"} "
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        224,
+        352
+      ],
+      "id": "b9b0e9ea-560f-4eb1-a819-243057851f63",
+      "name": "Kiểm tra dữ liệu ĐH tồn tại?",
+      "alwaysOutputData": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Sinh Thái ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const arr = $items('Kiểm tra dữ liệu ĐH tồn tại?');\n\n// Dữ liệu trả về có 2 lớp mảng -> lấy phần tử đầu tiên\nconst first = arr[0]?.json?.[0] || {};\n\nreturn [{\n  json: {\n    exists: !!first.name,           // True nếu có giá trị name\n    existed_name: first.name || null,\n    data: first                      // Lưu nguyên dữ liệu record\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        352
+      ],
+      "id": "bf8ad6ab-2ac3-4942-82c8-2e1ba5a377f9",
+      "name": "Kiểm tra xem dữ liệu DH"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "32c56d2b-fe41-4163-bc63-f272cfcea78a",
+              "leftValue": "={{ $json.exists }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        672,
+        352
+      ],
+      "id": "1fee7c65-5402-4265-a338-678fe54a7d7c",
+      "name": "Kiểm tra tồn tại DH",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "operation": "delete",
+        "recordId": "={{ $json.data.name }}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        864,
+        240
+      ],
+      "id": "aad76cb4-3a57-4f6d-a177-c47de37ee401",
+      "name": "Xóa bản ghi DH",
+      "alwaysOutputData": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Sinh Thái ERPNext"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n.mbwnext.com",
+            "x-real-ip": "118.70.15.11",
+            "x-forwarded-for": "118.70.15.11",
+            "x-forwarded-proto": "https",
+            "x-n8n-referrer": "nginx",
+            "connection": "upgrade",
+            "content-length": "2745",
+            "accept": "application/json",
+            "content-type": "application/json"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "data": [
+              {
+                "km": [
+                  {
+                    "id": "68ba9ca6f4dfdef4236f9062",
+                    "ten_khuyen_mai": "CTKM CKĐH 02",
+                    "ptype": "{\"label\":\"Tổng tiền hàng - chiết khấu đơn hàng (%)\",\"value\":\"TIEN_CKDH\"}",
+                    "product": [
+                      {
+                        "_id": "CKDH",
+                        "ma_san_pham": "",
+                        "ten_san_pham": "",
+                        "don_vi_tinh": "",
+                        "so_luong": 628.3
+                      }
+                    ]
+                  },
+                  {
+                    "id": "68d361b529aabd48183cb159",
+                    "ten_khuyen_mai": "CTKM CKĐH 03",
+                    "ptype": "{\"label\":\"Tổng tiền hàng - chiết khấu đơn hàng (%)\",\"value\":\"TIEN_CKDH\"}",
+                    "product": [
+                      {
+                        "_id": "CKDH",
+                        "ma_san_pham": "",
+                        "ten_san_pham": "",
+                        "don_vi_tinh": "",
+                        "so_luong": 1256.6
+                      }
+                    ]
+                  },
+                  {
+                    "id": "68a829751493efbc3b8bde92",
+                    "ten_khuyen_mai": "TRA THUONG THANG 07 TRUNG BAY NLPC",
+                    "ptype": {
+                      "label": "Tổng tiền hàng - tặng một hoặc nhiều sản phẩm",
+                      "value": "MUTI_TIEN_SP"
+                    },
+                    "product": [
+                      {
+                        "_id": "64214e3a7b37136c1da2a4ea",
+                        "ma_san_pham": "21027",
+                        "ten_san_pham": "Cozy Icetea đào 16g*15gr",
+                        "don_vi_tinh": {
+                          "viewData": "Hộp",
+                          "choice_values": "Hộp"
+                        },
+                        "don_vi_tinh_other": {
+                          "viewData": "",
+                          "choice_values": ""
+                        },
+                        "so_luong": 1
+                      },
+                      {
+                        "_id": "6178ffb1831d47c82f1de462",
+                        "ma_san_pham": "0322",
+                        "ten_san_pham": "Matcha Trà Sữa 3 in 1 ( Dây )",
+                        "don_vi_tinh": {
+                          "viewData": "Dây",
+                          "choice_values": "Dây"
+                        },
+                        "don_vi_tinh_other": {
+                          "viewData": "",
+                          "choice_values": ""
+                        },
+                        "so_luong": 1
+                      }
+                    ]
+                  }
+                ],
+                "tong_gia_tri_sp_km": "",
+                "thue15": 0,
+                "ckNPP": "",
+                "ckDH": "",
+                "trang_thai": "Đã duyệt",
+                "loai_don_hang": 1,
+                "ma_phieu": "ĐH_4884442025",
+                "ma_kh": "123",
+                "ten_kh": "TungDA",
+                "dia_chi": "Tây Hồ",
+                "sdt": "123",
+                "ngay_dat": "2025-09-28T17:00:00.000Z",
+                "ma_nhom": "HCM_NUOCQ7",
+                "ten_nhom": "HCM_NUOCQ7",
+                "ma_nv_dat": "",
+                "ten_nguoi_dat": "VŨ ĐĂNG DOANH",
+                "ma_nv_duyet": "",
+                "nguoi_duyet": "SUPPORT MBW",
+                "ngay_duyet": "2025-09-29T02:37:02.473Z",
+                "ngay_tao": "2025-09-29T02:36:38.321Z",
+                "ma_nguoi_tao": "",
+                "nguoi_tao": "SUPPORT MBW",
+                "ngay_sua": "2025-09-29T15:35:47.011Z",
+                "ma_nguoi_sua": "",
+                "nguoi_sua": "SUPPORT MBW",
+                "tong_tien_hang": 6283,
+                "tong_tien_vat": 352,
+                "tong_ck_sp": 0,
+                "ck_don_hang": 1885,
+                "phai_thanh_toan": 4750,
+                "cccd": "789",
+                "dia_chi_xuat_hoa_don": "Quảng An",
+                "ma_xuat_hoa_don": "MaXHD",
+                "ma_so_thue": "456",
+                "san_pham": [
+                  {
+                    "ma_san_pham": "4214",
+                    "ten_san_pham": "Trà cozy vải 455ml",
+                    "don_gia": "6283",
+                    "so_luong": "1",
+                    "sl_trong_kho": "2573",
+                    "ton": "",
+                    "don_vi_tinh": "Chai",
+                    "vat_sp": "8",
+                    "chiet_khau": "0",
+                    "chiet_khau_npp": "0",
+                    "chiet_khau_dh": "1885",
+                    "ty_le_ck_npp": "0%",
+                    "kho_xuat_dat": "KHOBINHDUONG",
+                    "ghi_chu_sp": "",
+                    "is_km": false
+                  },
+                  {
+                    "ma_san_pham_km": "21027",
+                    "ten_san_pham_km": "Cozy Icetea đào 16g*15gr",
+                    "so_luong_km": "1",
+                    "so_luong_kho": "0",
+                    "don_vi_tinh_km": "Hộp",
+                    "kho_xuat_khuyen_mai": "Hongtest",
+                    "ghi_chu_km": "",
+                    "is_km": true
+                  },
+                  {
+                    "ma_san_pham_km": "0322",
+                    "ten_san_pham_km": "Matcha Trà Sữa 3 in 1 ( Dây )",
+                    "so_luong_km": "1",
+                    "so_luong_kho": "-3",
+                    "don_vi_tinh_km": "Dây",
+                    "kho_xuat_khuyen_mai": "Hongtest",
+                    "ghi_chu_km": "",
+                    "is_km": true
+                  }
+                ],
+                "san_pham_km": []
+              }
+            ],
+            "type": "DMS_Ban_hang"
+          },
+          "webhookUrl": "http://localhost:5678/webhook/7072f742-2fb4-4000-b8ef-2e3a1ea5c667",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "repo_name": "n8n-backup",
+  "repo_owner": "MBW-Digital",
+  "repo_path": "sinhthaihcm/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-09-12T02:37:10.736Z",
+      "updatedAt": "2025-09-12T02:37:10.736Z",
+      "role": "workflow:owner",
+      "workflowId": "IwcawHPtgo8ZSmvH",
+      "projectId": "NLp1g7OOFWKDmygg"
+    }
+  ],
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-09-09T08:58:51.547Z",
+      "updatedAt": "2025-09-09T08:58:51.547Z",
+      "id": "neaSaDNALEghkloE",
+      "name": "MBW DMS"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2025-10-01T02:13:22.755Z",
+  "versionId": "ada70623-a672-4995-8789-94770d95c506"
+}
