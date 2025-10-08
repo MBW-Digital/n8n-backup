@@ -1,0 +1,272 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get Channel in MobiworkDMS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SplitInBatches": {
+      "main": [
+        [
+          {
+            "node": "Create Channel in MobiworkDMS",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Write Logs To ERPNEXT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Data Existence": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Channel in MobiworkDMS": {
+      "main": [
+        [
+          {
+            "node": "ERPNext Channel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ERPNext Channel": {
+      "main": [
+        [
+          {
+            "node": "Check Data Existence",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Channel in MobiworkDMS": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-09-29T04:15:30.543Z",
+  "id": "U90RaIXnEj9tpi5w",
+  "isArchived": false,
+  "meta": null,
+  "name": "[MBW DMS Cloud] Đồng bộ dữ liệu Channel ERPNext -> DMS",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1536,
+        240
+      ],
+      "id": "41eed2a7-3a3c-4b82-85ea-8cd91f3d2d23",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {
+          "reset": false
+        }
+      },
+      "id": "c2a6797d-d700-48db-ac4f-67a448bd55b0",
+      "name": "SplitInBatches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        -656,
+        352
+      ],
+      "typeVersion": 2,
+      "notesInFlow": true
+    },
+    {
+      "parameters": {
+        "functionCode": "const N = (s) => (s ?? '').toString().normalize('NFC').trim().toUpperCase();\n\n// 1) Lấy dữ liệu từ DMS\nconst dmsSource = $node['Get Channel in MobiworkDMS'].json ?? [];\nconst dmsRaw = Array.isArray(dmsSource)\n  ? (dmsSource[0]?.data ?? [])\n  : (dmsSource.data ?? []);\n\n// 2) Lấy dữ liệu từ ERP\nconst erpRaw = Array.isArray($json) ? $json : [];\n\n// 3) Lấy danh sách mã kênh đã có trong ERP\nconst dmsCodes = new Set(\n  dmsRaw\n    .map(x => N(x.ma)) // Dùng đúng field trong ERP\n    .filter(Boolean)\n);\n\n// 4) Chuẩn hóa dữ liệu từ DMS\nconst erp = erpRaw\n  .map(x => ({\n    ma: (x.name ?? '').toString().trim(),\n    ten: (x.channel ?? '').toString().trim()\n  }))\n  .filter(x => x.ma && x.ten);\n\n// 5) Chỉ giữ lại các record **chưa có trong ERP**\nconst toCreate = erp\n  .filter(x => !dmsCodes.has(N(x.ma)))\n  .map(x => ({\n    ma: x.ma,\n    ten: x.ten,\n    active: true,\n    stt: 1\n  }));\n\n// 6) Nếu không có gì để tạo -> trả về []\nreturn toCreate.length ? toCreate.map(item => ({ json: item })) : [];\n"
+      },
+      "name": "Check Data Existence",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        -880,
+        240
+      ],
+      "id": "4f8c04c0-3c15-4d5d-b677-726928bc2c23",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Integration Logs",
+        "operation": "create",
+        "parameters": "={\n\n  \"sync_type\": \"Channel\",\n  \"records_processed\": \"{{ $items('Check Data Existence').length }}\",\n  \"status\": \"Success\",\n  \"log_message\": \"Đồng bộ dữ liệu Channel thành công\"\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -480,
+        112
+      ],
+      "id": "65b95e93-ac82-444a-9055-080eb07b4c5f",
+      "name": "Write Logs To ERPNEXT",
+      "executeOnce": true,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "customerChannel",
+        "additionalFields": {}
+      },
+      "type": "CUSTOM.mbwdmsCustom",
+      "typeVersion": 1,
+      "position": [
+        -1312,
+        240
+      ],
+      "id": "b3797598-c80f-43a9-b117-61b7cdc57f8e",
+      "name": "Get Channel in MobiworkDMS",
+      "credentials": {
+        "MBWDMSCustomApi": {
+          "id": "2SVxatk3bkSth64j",
+          "name": "MBW DMS Cloud"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "doctype": "Channel",
+        "fields": "channel,name"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -1104,
+        240
+      ],
+      "id": "0a13c86e-2a2c-4e5a-bd11-308566d6bf3b",
+      "name": "ERPNext Channel",
+      "alwaysOutputData": true,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "customerChannel",
+        "operation": "create",
+        "data": "={ \"ma\": \"{{ $json.ma }}\", \"ten\": \"{{ $json.ten }}\",\"trang_thai\": true, \"stt\": 1}"
+      },
+      "type": "CUSTOM.mbwdmsCustom",
+      "typeVersion": 1,
+      "position": [
+        -432,
+        336
+      ],
+      "id": "b0d07a0e-c872-4daf-84ee-655b6c2a28a1",
+      "name": "Create Channel in MobiworkDMS",
+      "credentials": {
+        "MBWDMSCustomApi": {
+          "id": "2SVxatk3bkSth64j",
+          "name": "MBW DMS Cloud"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -208,
+        352
+      ],
+      "id": "1fff69f5-3d59-44c5-8a6c-c8016faa8303",
+      "name": "Wait",
+      "webhookId": "032098e3-b118-4605-8131-0035c9917fb1"
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-backup",
+  "repo_owner": "MBW-Digital",
+  "repo_path": "sinhthaihcm/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-09-29T04:15:30.543Z",
+      "updatedAt": "2025-09-29T04:15:30.543Z",
+      "role": "workflow:owner",
+      "workflowId": "U90RaIXnEj9tpi5w",
+      "projectId": "NLp1g7OOFWKDmygg"
+    }
+  ],
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-09-25T07:56:38.911Z",
+      "updatedAt": "2025-09-25T07:56:38.911Z",
+      "id": "U2rTcFSAg0Nbuwfe",
+      "name": "Đã hoàn thành"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2025-10-01T01:39:01.925Z",
+  "versionId": "52f75e94-6943-4fdf-9ba2-17f913b37505"
+}
