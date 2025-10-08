@@ -1,0 +1,389 @@
+{
+  "active": false,
+  "connections": {
+    "On clicking 'execute'": {
+      "main": [
+        [
+          {
+            "node": "MBWD ERPNext",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "MBWD ERPNext",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MBWD ERPNext": {
+      "main": [
+        [
+          {
+            "node": "Split",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Lấy sản phẩm trong ERPNext",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lấy sản phẩm trong ERPNext": {
+      "main": [
+        [
+          {
+            "node": "Kiểm tra xem dữ liệu có tồn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Cập nhật Sản Phẩm",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Thêm mới Sản Phẩm",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kiểm tra xem dữ liệu có tồn": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cập nhật Sản Phẩm": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Thêm mới Sản Phẩm": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-09-03T07:48:53.882Z",
+  "id": "1A28Z8Hgbo4orx3Q",
+  "isArchived": true,
+  "meta": null,
+  "name": "Đẩy dữ liệu từ Queu tới Item",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "be1a9580-0da7-48dc-b1ea-95b3141cf861",
+      "name": "On clicking 'execute'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        -1540,
+        80
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "id": "f2ce6b69-0d92-42a8-9bf2-43f9f2fd5d1f",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        -1540,
+        280
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "fields": "reference_doctype,reference_name,operation,payload,name",
+        "filters": {
+          "filter": [
+            {
+              "field": "source_data",
+              "value": "MBW DMS"
+            },
+            {
+              "field": "status",
+              "operator": "in",
+              "value": "Pending"
+            },
+            {
+              "field": "reference_doctype",
+              "value": "Item"
+            }
+          ]
+        }
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -1320,
+        180
+      ],
+      "id": "929a1350-b023-404c-b3cc-8c407bd28ea9",
+      "name": "MBWD ERPNext",
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Frappe Custom Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Biến một mảng trong 1 item thành nhiều item riêng\nfunction safeParse(value) {\n  if (typeof value !== 'string') return value;\n  const s = value?.trim?.() ?? '';\n  if (!s || (s[0] !== '{' && s[0] !== '[')) return value;\n  try { return JSON.parse(s); } catch { return value; }\n}\n\nconst all = $input.all();\nlet records;\n\n// 1) Trường hợp API trả về mảng ngay ở root\nif (Array.isArray(all[0]?.json)) {\n  records = all[0].json;\n\n// 2) Hoặc gói trong thuộc tính data\n} else if (Array.isArray(all[0]?.json?.data)) {\n  records = all[0].json.data;\n\n// 3) Hoặc đã là nhiều item sẵn\n} else {\n  records = all.map(i => i.json);\n}\n\n// Nếu mỗi record có trường payload dạng string → parse sang object (không bắt buộc)\nreturn records.map(r => {\n  const parsed = ('payload' in r) ? safeParse(r.payload) : r.payload;\n  return { json: { ...r, payload: parsed } };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1100,
+        180
+      ],
+      "id": "59b38178-3b4d-48ab-81f3-47a1b4b47abf",
+      "name": "Split"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -880,
+        180
+      ],
+      "id": "dd1969dd-9cf8-4ae2-bd03-225caae8f2cb",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "amount": 0.5
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        220,
+        200
+      ],
+      "id": "15cb4bee-9e47-43da-947e-e7020fc6cdc1",
+      "name": "Wait",
+      "webhookId": "50056d38-ba2b-453c-9cda-522d0db3e7c6"
+    },
+    {
+      "parameters": {
+        "doctype": "Item",
+        "operation": "getById",
+        "recordId": "={{ $json.reference_name }}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -660,
+        100
+      ],
+      "id": "76e38ffe-5340-41ac-8644-475a9405685d",
+      "name": "Lấy sản phẩm trong ERPNext",
+      "alwaysOutputData": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Frappe Custom Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "32c56d2b-fe41-4163-bc63-f272cfcea78a",
+              "leftValue": "={{ $json.exists }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -220,
+        100
+      ],
+      "id": "4b6f756d-d4ea-4b75-84b7-bb93956fac93",
+      "name": "If",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "jsCode": "const arr = $items('Lấy sản phẩm trong ERPNext'); \n\n// Kiểm tra xem item đầu tiên có field name không\nconst first = arr[0]?.json || {};\n\nreturn [{\n  json: {\n    exists: !!first.name,   // true nếu có giá trị name\n    existed_name: first.name || null,\n    data: arr[0]?.json || null,\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -440,
+        100
+      ],
+      "id": "438812bf-7f02-4924-8342-2a9b7bc96743",
+      "name": "Kiểm tra xem dữ liệu có tồn"
+    },
+    {
+      "parameters": {
+        "doctype": "Item",
+        "operation": "update",
+        "parameters": "="
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "93fdfff9-1832-4952-b565-07dd75e09f6a",
+      "name": "Cập nhật Sản Phẩm",
+      "alwaysOutputData": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Frappe Custom Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "doctype": "Item",
+        "operation": "create",
+        "parameters": "={\n  \"item_code\": \"{{ $('Split').item.json.payload.item_code }}\",\n  \"item_name\": \"{{ $('Split').item.json.payload.item_name }}\",\n  \"item_group\": \"Cozy 365 Trà Atiso\",\n  \"stock_uom\": \"{{ $('Split').item.json.payload.stock_uom }}\",\n  \"custom_item_billing_code\":\"{{ $('Split').item.json.payload.custom_item_billing_code }}\",\n  \"custom_item_billing_name\":\"{{ $('Split').item.json.payload.custom_item_billing_name }}\",\n  \"is_stock_item\": 1,\n  \"standard_rate\":  \"123\"\n}  "
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        0,
+        200
+      ],
+      "id": "854ed4a3-7f1b-4b1f-b2ce-d6f1309db3bc",
+      "name": "Thêm mới Sản Phẩm",
+      "alwaysOutputData": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Frappe Custom Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-backup",
+  "repo_owner": "MBW-Digital",
+  "repo_path": "sinhthaihcm/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-09-03T07:48:53.882Z",
+      "updatedAt": "2025-09-03T07:48:53.882Z",
+      "role": "workflow:owner",
+      "workflowId": "1A28Z8Hgbo4orx3Q",
+      "projectId": "NLp1g7OOFWKDmygg"
+    }
+  ],
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-09-03T07:48:49.315Z",
+      "updatedAt": "2025-09-03T07:48:49.315Z",
+      "id": "HmMyDMy8FTsYQkDm",
+      "name": "ERPNext"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-23T08:37:36.331Z",
+  "versionId": "80252af0-be00-4ab1-b8e4-664b8d765c17"
+}
