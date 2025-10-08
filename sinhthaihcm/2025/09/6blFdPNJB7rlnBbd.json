@@ -1,0 +1,497 @@
+{
+  "active": false,
+  "connections": {
+    "Check Data Existence": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Data Exists": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Supplier in MobiworkDMS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Supplier ERPNext",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SplitInBatches": {
+      "main": [
+        [
+          {
+            "node": "IF Data Exists",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Write Logs To ERPNEXT1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supplier ERPNext": {
+      "main": [
+        [
+          {
+            "node": "Get List Address",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Unwrap Supplier to Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Supplier in MobiworkDMS": {
+      "main": [
+        [
+          {
+            "node": "Check Data Existence",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "ERPNext Supplier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Address ERPNext": {
+      "main": [
+        [
+          {
+            "node": "Unwrap Address to Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Unwrap Address to Merge": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Unwrap Supplier to Merge": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ERPNext Supplier": {
+      "main": [
+        [
+          {
+            "node": "Get Supplier in MobiworkDMS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Supplier in MobiworkDMS": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get List Address": {
+      "main": [
+        [
+          {
+            "node": "Address ERPNext",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-09-26T03:26:09.816Z",
+  "id": "6blFdPNJB7rlnBbd",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "[DMS] Đồng bộ dữ liệu Nhà cung cấp DMS -> ERPNext",
+  "nodes": [
+    {
+      "parameters": {
+        "functionCode": "// Helper chuẩn hóa để so sánh (upper-case + trim)\nconst N = s => (s ?? '').toString().trim().toUpperCase();\n\n// 1) Lấy dữ liệu\nconst dmsData = $node['Get Supplier in MobiworkDMS'].json?.data ?? [];\nconst erpMerged = $items(\"ERPNext Supplier\").map(i => i.json);;\n// 2) Tập mã đã có bên DMS\nconst dmsCodes = dmsData.map(u => (u.ma || '').toUpperCase());\n\n// 3) Lọc ra những item có trong ERP nhưng chưa có trong DMS\nreturn erpMerged\n  .filter(e => e.name && !dmsCodes.includes(N(e.name)))\n  .map(e => {\n    // build diaChi từ các field address sau merge\n    const parts = [\n      e.address_line1,\n      e.address_line2,\n      e.state,\n      e.city,\n      e.country,\n    ].filter(Boolean);\n\n    const diaChi = parts.join(\", \");\n    console.log(\"11test \", e)\n\n    return {\n      json: {\n        isExists: false,              // để IF node biết là chưa tồn tại\n        ma: e.name || null,           // mã ERP -> DMS.ma\n        ten: e.supplier_name || null, // tên hiển thị\n        dia_chi: diaChi || null,\n        so_dien_thoai: e.mobile_no || null,\n        ma_so_thue: e.tax_id || null,\n        stt: 1\n      }\n    };\n  });\n"
+      },
+      "name": "Check Data Existence",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        912,
+        240
+      ],
+      "id": "6a0b1876-f3ef-4d3c-a07a-5a28528e4540",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json['isExists'] }}",
+              "operation": "=equal",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "name": "IF Data Exists",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1360,
+        240
+      ],
+      "id": "45c3f7ef-bdb5-4b84-9617-816179edbfae",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -880,
+        240
+      ],
+      "id": "0ec51c19-9cd8-44a3-8f26-a5c54c9d390d",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1808,
+        320
+      ],
+      "id": "8a59f93d-b2a0-4e93-8b99-682effb253fd",
+      "name": "Wait",
+      "webhookId": "3cc85c1d-76c2-4490-8ac7-7ab5722675dd"
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Integration Logs",
+        "operation": "create",
+        "parameters": "={\n  \"sync_type\": \"Supplier\",\n  \"records_processed\": \"{{ $('Check Data Existence').all().length}}\",\n  \"status\": \"Success\",\n  \"log_message\": \"Đồng bộ dữ liệu Supplier thành công\"\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        1360,
+        48
+      ],
+      "id": "7c33a1e6-3893-4630-90f6-5391ef5fe8ea",
+      "name": "Write Logs To ERPNEXT1",
+      "executeOnce": true,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {
+          "reset": false
+        }
+      },
+      "id": "688b0502-2307-4e3b-8106-7147f6b0f2fb",
+      "name": "SplitInBatches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        1136,
+        240
+      ],
+      "typeVersion": 2,
+      "notesInFlow": true
+    },
+    {
+      "parameters": {
+        "doctype": "Supplier",
+        "fields": "name,supplier_name,supplier_primary_address,mobile_no,tax_id"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -656,
+        240
+      ],
+      "id": "104530c9-d0db-45cb-8cdd-a43dc91446f3",
+      "name": "Supplier ERPNext",
+      "alwaysOutputData": true,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "supplier",
+        "additionalFields": {}
+      },
+      "type": "CUSTOM.mbwdmsCustom",
+      "typeVersion": 1,
+      "position": [
+        688,
+        240
+      ],
+      "id": "a1c4dbbf-d9d0-42b0-bf01-7dafd9293492",
+      "name": "Get Supplier in MobiworkDMS",
+      "credentials": {
+        "MBWDMSCustomApi": {
+          "id": "2SVxatk3bkSth64j",
+          "name": "MBW DMS Cloud"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "advanced": true,
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "=supplier_primary_address",
+              "field2": "=address_id"
+            }
+          ]
+        },
+        "joinMode": "enrichInput1",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        240,
+        240
+      ],
+      "id": "b7d79303-e3a6-4b16-b708-cdfd8e1b93a1",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "doctype": "Address",
+        "fields": "name, address_line1, address_line2, state, city, country",
+        "filters": {
+          "filter": [
+            {
+              "field": "=name",
+              "operator": "in",
+              "value": "={{ $json.names }}"
+            }
+          ]
+        }
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -208,
+        320
+      ],
+      "id": "f703f154-317b-49dc-af8c-d3e56b6a9be2",
+      "name": "Address ERPNext",
+      "alwaysOutputData": true,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.flatMap(item => {\n  if (Array.isArray(item.json)) {\n    return item.json.map(x => ({\n      json: {\n        ...x,\n        address_id: x.name,\n        name: undefined\n      }\n    }));\n  }\n  return {\n    json: {\n      ...item.json,\n      address_id: item.json.name,\n      name: undefined\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        16,
+        320
+      ],
+      "id": "3b29709f-4759-4930-9a12-e870ddb2d916",
+      "name": "Unwrap Address to Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Input có dạng [[{...}]], ta flatten thành [{...}]\nreturn items.flatMap(item => {\n  if (Array.isArray(item.json)) {\n    return item.json.map(x => ({ json: x }));\n  }\n  return item;\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        16,
+        128
+      ],
+      "id": "258e42d9-d171-4a71-9474-1c303c2ba88a",
+      "name": "Unwrap Supplier to Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  const s = item.json;\n  const a = {\n    address_line1: s.address_line1,\n    address_line2: s.address_line2,\n    state: s.state,\n    city: s.city,\n    pincode: s.pincode,\n    country: s.country,\n    phone: s.phone,\n    fax: s.fax,\n    email_id: s.email_id,\n  };\n\n  let addr = \"\";\n  if (a.address_line1) addr += a.address_line1 + \"<br>\";\n  if (a.address_line2) addr += a.address_line2 + \"<br>\";\n  if (a.state) addr += a.state + \"<br>\";\n  if (a.city) addr += a.city + \"<br>\";\n  if (a.country) addr += a.country + \"<br>\";\n\n  return {\n    json: {\n      ...s,\n      primary_address: addr || null\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        464,
+        240
+      ],
+      "id": "a78b6632-e61d-4e46-962f-6b76788e974e",
+      "name": "ERPNext Supplier"
+    },
+    {
+      "parameters": {
+        "resource": "supplier",
+        "operation": "create",
+        "data": "={\"ten\":\"{{ $json.ten }}\",\"ma\":\"{{ $json.ma }}\", \"dia_chi\": \"{{ $json.dia_chi }}\", \"so_dien_thoai\": \"{{ $json.so_dien_thoai }}\", \"ma_so_thue\": \"{{ $json.ma_so_thue }}\",\"trang_thai\": true,\"stt\":1} "
+      },
+      "type": "CUSTOM.mbwdmsCustom",
+      "typeVersion": 1,
+      "position": [
+        1504,
+        336
+      ],
+      "id": "37f2eb0e-65ba-45f5-b2ea-590baaaf8026",
+      "name": "Create Supplier in MobiworkDMS",
+      "credentials": {
+        "MBWDMSCustomApi": {
+          "id": "2SVxatk3bkSth64j",
+          "name": "MBW DMS Cloud"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const erpData = $node['Supplier ERPNext'].json ?? [];\nreturn [{\n  json: {\n    names: erpData.map(i => i.supplier_primary_address).filter(Boolean)\n  }\n}]\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -432,
+        320
+      ],
+      "id": "281d41ba-04d8-425f-b972-181004cbfd99",
+      "name": "Get List Address"
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-backup",
+  "repo_owner": "MBW-Digital",
+  "repo_path": "sinhthaihcm/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-09-26T03:26:09.816Z",
+      "updatedAt": "2025-09-26T03:26:09.816Z",
+      "role": "workflow:owner",
+      "workflowId": "6blFdPNJB7rlnBbd",
+      "projectId": "NLp1g7OOFWKDmygg"
+    }
+  ],
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-09-09T08:58:51.547Z",
+      "updatedAt": "2025-09-09T08:58:51.547Z",
+      "id": "neaSaDNALEghkloE",
+      "name": "MBW DMS"
+    },
+    {
+      "createdAt": "2025-09-25T07:56:38.911Z",
+      "updatedAt": "2025-09-25T07:56:38.911Z",
+      "id": "U2rTcFSAg0Nbuwfe",
+      "name": "Đã hoàn thành"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2025-10-01T02:08:59.413Z",
+  "versionId": "19fd5b16-7147-46ba-afc7-6bc31f082138"
+}
