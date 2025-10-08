@@ -1,0 +1,714 @@
+{
+  "active": false,
+  "connections": {
+    "On clicking 'execute'": {
+      "main": [
+        [
+          {
+            "node": "Lấy danh sách bản ghi Nhà Phân Phối",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Lấy danh sách bản ghi Nhà Phân Phối",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Lấy công ty trong ERPNext",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Thêm mới Công ty",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kiểm tra xem dữ liệu có tồn": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lấy danh sách bản ghi Nhà Phân Phối": {
+      "main": [
+        [
+          {
+            "node": "Split",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lấy công ty trong ERPNext": {
+      "main": [
+        [
+          {
+            "node": "Kiểm tra xem dữ liệu có tồn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Thêm mới Công ty": {
+      "main": [
+        [
+          {
+            "node": "Lấy khách hàng trong ERPNext",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lấy khách hàng trong ERPNext": {
+      "main": [
+        [
+          {
+            "node": "Kiểm tra xem dữ liệu khách hàng có tồn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kiểm tra xem dữ liệu khách hàng có tồn": {
+      "main": [
+        [
+          {
+            "node": "Nếu đã có khách hàng",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Nếu đã có khách hàng": {
+      "main": [
+        [
+          {
+            "node": "Cập nhật khách hàng",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Thêm mới Khách Hàng",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Thêm mới Khách Hàng": {
+      "main": [
+        [
+          {
+            "node": "Lấy nhà cung cấp trong ERPNext",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cập nhật khách hàng": {
+      "main": [
+        [
+          {
+            "node": "Lấy nhà cung cấp trong ERPNext",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lấy nhà cung cấp trong ERPNext": {
+      "main": [
+        [
+          {
+            "node": "Kiểm tra xem dữ liệu?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kiểm tra xem dữ liệu?": {
+      "main": [
+        [
+          {
+            "node": "Điền kiện nhà cung cấp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Điền kiện nhà cung cấp": {
+      "main": [
+        [
+          {
+            "node": "Cập nhật Nhà cung cấp",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Thêm mới nhà cung cấp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cập nhật Nhà cung cấp": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Thêm mới nhà cung cấp": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-09-09T09:00:09.625Z",
+  "id": "OytH0qH3Ui2QfGcy",
+  "isArchived": false,
+  "meta": null,
+  "name": "[ERPNext] Cập nhật dữ liệu Nhà Phân Phối từ Queue sang Company",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "4040aec8-0202-464f-8de2-1af442f234ba",
+      "name": "On clicking 'execute'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        -1536,
+        -80
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "id": "95d6667c-f561-4f1f-b004-7a9a1ee0d85f",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        -1536,
+        112
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "jsCode": "// Biến một mảng trong 1 item thành nhiều item riêng\nfunction safeParse(value) {\n  if (typeof value !== 'string') return value;\n  const s = value?.trim?.() ?? '';\n  if (!s || (s[0] !== '{' && s[0] !== '[')) return value;\n  try { return JSON.parse(s); } catch { return value; }\n}\n\nconst all = $input.all();\nlet records;\n\n// 1) Trường hợp API trả về mảng ngay ở root\nif (Array.isArray(all[0]?.json)) {\n  records = all[0].json;\n\n// 2) Hoặc gói trong thuộc tính data\n} else if (Array.isArray(all[0]?.json?.data)) {\n  records = all[0].json.data;\n\n// 3) Hoặc đã là nhiều item sẵn\n} else {\n  records = all.map(i => i.json);\n}\n\n// Nếu mỗi record có trường payload dạng string → parse sang object (không bắt buộc)\nreturn records.map(r => {\n  const parsed = ('payload' in r) ? safeParse(r.payload) : r.payload;\n  return { json: { ...r, payload: parsed } };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1088,
+        16
+      ],
+      "id": "fd6830d6-cb20-487a-99e0-7f3990552d91",
+      "name": "Split"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -864,
+        16
+      ],
+      "id": "a96392b2-f667-4507-8847-63dcffc3ece5",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "amount": 0.5
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2128,
+        144
+      ],
+      "id": "20a1376a-bae7-4668-842b-6026219fbe43",
+      "name": "Wait",
+      "webhookId": "7c86a37a-9b3a-476d-8cdf-b6efe945c307"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "32c56d2b-fe41-4163-bc63-f272cfcea78a",
+              "leftValue": "={{ $json.exists }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -192,
+        -64
+      ],
+      "id": "13b32716-e092-46bd-b7ff-bfe7c6cf52ac",
+      "name": "If",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "jsCode": "const arr = $items('Lấy công ty trong ERPNext'); \n\n// Kiểm tra xem item đầu tiên có field name không\nconst first = arr[0]?.json || {};\n\nreturn [{\n  json: {\n    exists: !!first.name,   // true nếu có giá trị name\n    existed_name: first.name || null,\n    data: arr[0]?.json || null,\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -416,
+        -64
+      ],
+      "id": "94e3e7d3-bbe5-441c-95d7-35c36b3e64e1",
+      "name": "Kiểm tra xem dữ liệu có tồn"
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "fields": "reference_doctype,reference_name,operation,payload,name",
+        "filters": {
+          "filter": [
+            {
+              "field": "source_data",
+              "value": "MBW DMS"
+            },
+            {
+              "field": "status",
+              "operator": "in",
+              "value": "Pending"
+            },
+            {
+              "field": "reference_doctype",
+              "value": "Distribution"
+            }
+          ]
+        }
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -1312,
+        16
+      ],
+      "id": "767a1e37-f24d-4944-b2e7-d3537599be34",
+      "name": "Lấy danh sách bản ghi Nhà Phân Phối",
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Sinh Thái ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "doctype": "Company",
+        "operation": "getById",
+        "recordId": "={{ $json.payload.distribution_name }}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -640,
+        -64
+      ],
+      "id": "dee258b3-04fa-4abd-82f2-53be366ecefd",
+      "name": "Lấy công ty trong ERPNext",
+      "alwaysOutputData": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Sinh Thái ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "doctype": "Company",
+        "operation": "create",
+        "parameters": "={\n  \"abbr\": \"{{ $('Split').item.json.payload.distribution_code }}\",\n  \"company_name\": \"{{ $('Split').item.json.payload.distribution_name }}\",\n  \"default_currency\": \"VND\",\n  \"country\": \"Vietnam\"\n}  "
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        32,
+        -128
+      ],
+      "id": "9af389f1-2ef4-4dd9-9301-25d27df27c5f",
+      "name": "Thêm mới Công ty",
+      "alwaysOutputData": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Sinh Thái ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "doctype": "Customer",
+        "operation": "create",
+        "parameters": "={\n  \"customer_type\": \"Company\",\n  \"custom_dms_customer_category\": \"Công ty\",\n   \"customer_name\": \"{{ $('Loop Over Items').item.json.payload.distribution_name }}\",\n  \"customer_code\": \"{{ $('Loop Over Items').item.json.payload.distribution_code }}\",\n\"is_internal_customer\":true,\n\"represents_company\":\"{{ $('Loop Over Items').item.json.payload.distribution_name }}\"\n}\n"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        928,
+        -32
+      ],
+      "id": "688b164b-57db-43c2-86b3-9ba0b7bc9a36",
+      "name": "Thêm mới Khách Hàng",
+      "alwaysOutputData": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Sinh Thái ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "doctype": "Customer",
+        "operation": "getById",
+        "recordId": "={{ $json.payload.distribution_code }}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        256,
+        -128
+      ],
+      "id": "1c8abd73-dcff-49d1-aede-ea84f682e751",
+      "name": "Lấy khách hàng trong ERPNext",
+      "alwaysOutputData": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Sinh Thái ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const arr = $items('Lấy khách hàng trong ERPNext'); \n\n// Kiểm tra xem item đầu tiên có field name không\nconst first = arr[0]?.json || {};\n\nreturn [{\n  json: {\n    exists: !!first.name,   // true nếu có giá trị name\n    existed_name: first.name || null,\n    data: arr[0]?.json || null,\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        -128
+      ],
+      "id": "f235936e-5030-4edf-bf24-c0b8c9115723",
+      "name": "Kiểm tra xem dữ liệu khách hàng có tồn"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "32c56d2b-fe41-4163-bc63-f272cfcea78a",
+              "leftValue": "={{ $json.exists }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        704,
+        -128
+      ],
+      "id": "b3b5140a-0ed0-48f4-afe4-e3d2ea702d3e",
+      "name": "Nếu đã có khách hàng",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "doctype": "Customer",
+        "operation": "update",
+        "parameters": "={\n  \"customer_type\": \"Company\",\n  \"custom_dms_customer_category\": \"Công ty\",\n   \"customer_name\": \"{{ $('Loop Over Items').item.json.payload.distribution_name }}\",\n  \"customer_code\": \"{{ $('Loop Over Items').item.json.payload.distribution_code }}\",\n\"is_internal_customer\":true,\n\"represents_company\":\"{{ $('Loop Over Items').item.json.payload.distribution_name }}\"\n}\n",
+        "recordId": "={{ $json.data.name }}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        928,
+        -224
+      ],
+      "id": "e67c1521-39a6-4a89-b76c-cd9dbca7fd45",
+      "name": "Cập nhật khách hàng",
+      "alwaysOutputData": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Sinh Thái ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "doctype": "Supplier",
+        "operation": "getById",
+        "recordId": "={{ $('Loop Over Items').item.json.payload.distribution_name }}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        1168,
+        -160
+      ],
+      "id": "2a9de95c-3f5d-4d59-875a-787fcbcea141",
+      "name": "Lấy nhà cung cấp trong ERPNext",
+      "alwaysOutputData": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Sinh Thái ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "32c56d2b-fe41-4163-bc63-f272cfcea78a",
+              "leftValue": "={{ $json.exists }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1568,
+        -160
+      ],
+      "id": "73952a95-d0b2-40d4-a1d1-c9486c6d1e38",
+      "name": "Điền kiện nhà cung cấp",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "jsCode": "const arr = $items('Lấy nhà cung cấp trong ERPNext'); \n\n// Kiểm tra xem item đầu tiên có field name không\nconst first = arr[0]?.json || {};\n\nreturn [{\n  json: {\n    exists: !!first.name,   // true nếu có giá trị name\n    existed_name: first.name || null,\n    data: arr[0]?.json || null,\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1376,
+        -160
+      ],
+      "id": "cce6b584-c688-4821-a768-ea133ded09cd",
+      "name": "Kiểm tra xem dữ liệu?"
+    },
+    {
+      "parameters": {
+        "doctype": "Supplier",
+        "operation": "create",
+        "parameters": "={\n  \"supplier_name\": \"{{ $('Loop Over Items').item.json.payload.distribution_name }}\",\n  \"supplier_code\": \"{{ $('Loop Over Items').item.json.payload.distribution_code }}\",\n  \"supplier_type\": \"Company\",\n  \"is_internal_supplier\":true,\n  \"represents_company\":\"{{ $('Loop Over Items').item.json.payload.distribution_name }}\"\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        1792,
+        -16
+      ],
+      "id": "5af0f0f7-8f55-4155-a755-5e2f10821857",
+      "name": "Thêm mới nhà cung cấp",
+      "alwaysOutputData": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Sinh Thái ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "doctype": "Supplier",
+        "operation": "update",
+        "parameters": "={{ JSON.stringify($('Convert Data With Company').item.json) }}",
+        "recordId": "={{ $('Convert Data With Company').item.json.supplier_name }}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        1792,
+        -272
+      ],
+      "id": "a77fa845-6b92-4ad7-b131-140fabe24ee5",
+      "name": "Cập nhật Nhà cung cấp",
+      "alwaysOutputData": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "q04ILlO0Tw9oAhAL",
+          "name": "Sinh Thái ERPNext"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-backup",
+  "repo_owner": "MBW-Digital",
+  "repo_path": "sinhthaihcm/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-09-09T09:00:09.625Z",
+      "updatedAt": "2025-09-09T09:00:09.625Z",
+      "role": "workflow:owner",
+      "workflowId": "OytH0qH3Ui2QfGcy",
+      "projectId": "NLp1g7OOFWKDmygg"
+    }
+  ],
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-09-09T08:58:23.942Z",
+      "updatedAt": "2025-09-09T08:58:23.942Z",
+      "id": "UusOo5b8CqNpNaGd",
+      "name": "Background Job Queue"
+    },
+    {
+      "createdAt": "2025-09-03T07:48:49.315Z",
+      "updatedAt": "2025-09-03T07:48:49.315Z",
+      "id": "HmMyDMy8FTsYQkDm",
+      "name": "ERPNext"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-28T08:19:21.341Z",
+  "versionId": "6e73cfb4-0090-4002-920f-1105d4ee9e8a"
+}
