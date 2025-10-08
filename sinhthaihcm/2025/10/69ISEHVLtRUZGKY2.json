@@ -1,0 +1,349 @@
+{
+  "active": true,
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Extract Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Webhook": {
+      "main": [
+        []
+      ]
+    },
+    "Extract Data": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Get Bank Account By SePay",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Bank Account By Sepay",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Payment Entry (Sale Invoice)": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Sale Invoice By Sepay Code": {
+      "main": [
+        [
+          {
+            "node": "Create Payment Entry (Sale Invoice)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Bank Account By SePay": {
+      "main": [
+        [
+          {
+            "node": "Get Sale Invoice By Sepay Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Bank Account By Sepay": {
+      "main": [
+        [
+          {
+            "node": "Get Sale Order By Sepay Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Sale Order By Sepay Code": {
+      "main": [
+        [
+          {
+            "node": "Create Payment Entry (Sale Order)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Payment Entry (Sale Order)": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-10-01T06:28:04.283Z",
+  "id": "69ISEHVLtRUZGKY2",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Demo",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "b7e38f5d-184e-4f94-8cc0-fdca0e7422a9",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -336,
+        -80
+      ],
+      "id": "41c1150d-3c02-4dd6-aad2-65cfef5d8e0c",
+      "name": "Webhook",
+      "webhookId": "b7e38f5d-184e-4f94-8cc0-fdca0e7422a9"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        848,
+        -96
+      ],
+      "id": "94349156-dca8-4c56-b060-93ffb87fd6cc",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $json.body || {};\nconst code = body.code || \"\";\nconst description = body.description || \"\";\nconst transactionDate = body.transactionDate || \"\";\n\n// Xác định loại code: SI hay SO\nlet codeType = null;\nif (code.startsWith(\"SI\")) {\n  codeType = \"SI\";\n} else if (code.startsWith(\"SO\")) {\n  codeType = \"SO\";\n}\n\n// Sinh thêm code dạng SI_xxx hoặc SO_xxx\nlet formattedCode = code;\nif (codeType) {\n  formattedCode = codeType + \"_\" + code.slice(2);\n}\n\n// Lấy mã giao dịch từ description (FT...)\nlet magiaodich = null;\nconst match = description.match(/(FT\\d+)/);\nif (match) {\n  magiaodich = match[1];\n}\n\n// Format ngày về YYYY-MM-DD\nlet formattedDate = null;\nif (transactionDate) {\n  try {\n    const d = new Date(transactionDate);\n    formattedDate = d.toISOString().split(\"T\")[0]; // YYYY-MM-DD\n  } catch (e) {\n    formattedDate = transactionDate; // fallback\n  }\n}\n\nreturn [\n  {\n    json: {\n      accountNumber: body.accountNumber,\n      transferAmount: body.transferAmount,\n      referenceCode: body.referenceCode,\n      codeType: codeType,\n      formattedCode: formattedCode,\n      magiaodich: magiaodich,\n      transactionDate: formattedDate\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -112,
+        -80
+      ],
+      "id": "675c66c2-1662-4b1a-82a1-7653d9566d82",
+      "name": "Extract Data"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3d3291ed-debf-42ad-915b-1f09ff0258a0",
+              "leftValue": "={{ $json['codeType'] }}",
+              "rightValue": "SI",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        112,
+        -80
+      ],
+      "id": "bb578440-65f4-4e9f-92f1-8fab9e4c5dff",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "doctype": "Payment Entry",
+        "operation": "create",
+        "parameters": "={\n  \"payment_type\": \"Receive\",\n  \"party_type\": \"Customer\",\n  \"company\": \"{{ $json[0].company }}\",\n  \"party\": \"{{ $json[0].customer }}\",\n  \"party_name\": \"{{ $json[0].customer_name }}\",\n  \"paid_amount\": {{ $('If').item.json.transferAmount }},\n  \"received_amount\": {{ $('If').item.json.transferAmount }},\n  \"reference_no\": \"{{ $('If').item.json.magiaodich }}\",\n  \"reference_date\": \"{{ $('If').item.json.transactionDate }}\",\n  \"source_exchange_rate\": 1,\n  \"target_exchange_rate\": 1,\n  \"paid_to\": \"1121 - Tiền Việt Nam - M\",\n  \"paid_to_account_currency\": \"VND\",\n  \"bank_account\":\"{{ $('Get Bank Account By SePay').item.json[0].name }}\",\n  \"docstatus\": 1,\n  \"references\": [\n    {\n      \"reference_doctype\": \"Sales Invoice\",\n      \"reference_name\": \"{{ $json[0].name }}\",\n      \"doctype\": \"Payment Entry Reference\",\n      \"allocated_amount\": {{ $('If').item.json.transferAmount }}\n    }\n  ]\n}\n"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        640,
+        -304
+      ],
+      "id": "28cc94b0-cc38-46e5-ae46-842622adfb45",
+      "name": "Create Payment Entry (Sale Invoice)",
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "7bWqUtVG2O72R8mN",
+          "name": "Dev MBWNext 8004"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "doctype": "Sales Invoice",
+        "operation": "find",
+        "query": "={\n  \"fields\": [\"*\"],\n  \"filters\": [[\"custom_sepay_code\", \"=\", \"{{ $('If').item.json.formattedCode }}\"]]\n} "
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        448,
+        -304
+      ],
+      "id": "b1e9dc5d-f000-421d-ac4a-b7e0e846261c",
+      "name": "Get Sale Invoice By Sepay Code",
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "7bWqUtVG2O72R8mN",
+          "name": "Dev MBWNext 8004"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "doctype": "Bank Account",
+        "operation": "find",
+        "query": "={\n  \"fields\": [\"*\"],\n  \"filters\": [[\"bank_account_no\", \"=\", \"{{ $json['accountNumber'] }}\"]]\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        272,
+        -304
+      ],
+      "id": "80adef24-f321-423a-9f33-15a28592f78c",
+      "name": "Get Bank Account By SePay",
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "7bWqUtVG2O72R8mN",
+          "name": "Dev MBWNext 8004"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "doctype": "Bank Account",
+        "operation": "find",
+        "query": "={\n  \"fields\": [\"*\"],\n  \"filters\": [[\"bank_account_no\", \"=\", \"{{ $json['accountNumber'] }}\"]]\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        304,
+        32
+      ],
+      "id": "602767ac-a7ff-4e6a-826e-f7bb517ec1eb",
+      "name": "Get Bank Account By Sepay",
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "7bWqUtVG2O72R8mN",
+          "name": "Dev MBWNext 8004"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "doctype": "Sales Order",
+        "operation": "find",
+        "query": "={\n  \"fields\": [\"*\"],\n  \"filters\": [[\"custom_sepay_code\", \"=\", \"{{ $('If').item.json.formattedCode }}\"]]\n} "
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        480,
+        32
+      ],
+      "id": "46173a7b-1a91-4bd6-a53f-e136497fe19e",
+      "name": "Get Sale Order By Sepay Code",
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "7bWqUtVG2O72R8mN",
+          "name": "Dev MBWNext 8004"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "doctype": "Payment Entry",
+        "operation": "create",
+        "parameters": "={\n  \"payment_type\": \"Receive\",\n  \"party_type\": \"Customer\",\n  \"company\": \"{{ $json[0].company }}\",\n  \"party\": \"{{ $json[0].customer }}\",\n  \"party_name\": \"{{ $json[0].customer_name }}\",\n  \"paid_amount\": {{ $('If').item.json.transferAmount }},\n  \"received_amount\": {{ $('If').item.json.transferAmount }},\n  \"reference_no\": \"{{ $('If').item.json.magiaodich }}\",\n  \"reference_date\": \"{{ $('If').item.json.transactionDate }}\",\n  \"source_exchange_rate\": 1,\n  \"target_exchange_rate\": 1,\n  \"paid_to\": \"1121 - Tiền Việt Nam - M\",\n  \"paid_to_account_currency\": \"VND\",\n  \"bank_account\":\"{{ $('Get Bank Account By Sepay').item.json[0].name }}\",\n  \"docstatus\": 1,\n  \"references\": [\n    {\n      \"reference_doctype\": \"Sales Order\",\n      \"reference_name\": \"{{ $json[0].name }}\",\n      \"doctype\": \"Payment Entry Reference\",\n      \"allocated_amount\": {{ $('If').item.json.transferAmount }}\n    }\n  ]\n}\n"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        672,
+        32
+      ],
+      "id": "7afdbbaf-9b21-4eb6-bd95-53654ca19308",
+      "name": "Create Payment Entry (Sale Order)",
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "7bWqUtVG2O72R8mN",
+          "name": "Dev MBWNext 8004"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-backup",
+  "repo_owner": "MBW-Digital",
+  "repo_path": "sinhthaihcm/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-10-01T06:28:04.283Z",
+      "updatedAt": "2025-10-01T06:28:04.283Z",
+      "role": "workflow:owner",
+      "workflowId": "69ISEHVLtRUZGKY2",
+      "projectId": "NLp1g7OOFWKDmygg"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-10-03T08:42:39.190Z",
+  "versionId": "e3bb6246-6217-4994-a25b-0bca8ae6b370"
+}
