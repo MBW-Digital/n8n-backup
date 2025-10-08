@@ -1,0 +1,1296 @@
+{
+  "active": false,
+  "connections": {
+    "On clicking 'execute'": {
+      "main": [
+        [
+          {
+            "node": "MBWD ERPNext",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "MBWD ERPNext",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Write Logs To ERPNEXT",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Kiểm tra xem dữ liệu có tồn tại",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "[Update] Chuyển đổi dữ liệu",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "[Add] Chuyển đổi dữ liệu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[Update] Chuyển đổi dữ liệu": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[Add] Chuyển đổi dữ liệu": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Check Nhãn hiệu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kiểm tra xem dữ liệu Brand tồn tại ?": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kiểm tra xem dữ liệu Item Group tồn tại ?": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Check Industry",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Brand",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Return",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Write Logs Fail To ERPNEXT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow": {
+      "main": [
+        [
+          {
+            "node": "Create Product",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow1": {
+      "main": [
+        [
+          {
+            "node": "Update Product",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lấy danh sách Mặt hàng của MobiworkDMS": {
+      "main": [
+        [
+          {
+            "node": "Split",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Nhãn hiệu": {
+      "main": [
+        [
+          {
+            "node": "Kiểm tra xem dữ liệu Brand tồn tại ?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Kiểm tra xem dữ liệu Brand tồn tại ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Brand": {
+      "main": [
+        [
+          {
+            "node": "Check Industry",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Check Industry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Industry": {
+      "main": [
+        [
+          {
+            "node": "Kiểm tra xem dữ liệu Item Group tồn tại ?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Kiểm tra xem dữ liệu Item Group tồn tại ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Product": {
+      "main": [
+        [
+          {
+            "node": "Update status Success queue",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update status Failed queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kiểm tra xem dữ liệu có tồn tại": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Product": {
+      "main": [
+        [
+          {
+            "node": "Update status Success queue1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update status Failed queue1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MBWD ERPNext": {
+      "main": [
+        [
+          {
+            "node": "Lấy danh sách Mặt hàng của MobiworkDMS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write Logs To ERPNEXT": {
+      "main": [
+        []
+      ]
+    },
+    "Update status Success queue": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update status Failed queue": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update status Failed queue1": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update status Success queue1": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write Logs Fail To ERPNEXT": {
+      "main": [
+        [
+          {
+            "node": "Return",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Delete Product",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Product": {
+      "main": [
+        [
+          {
+            "node": "Update status delete Success",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update status delete Failed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update status delete Success": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update status delete Failed": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-09-24T06:32:17.623Z",
+  "id": "IzmIGlRRv0iyNKgh",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "[ERPNext] Cập nhật dữ liệu Sản phẩm từ Queue sang Item",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "3a3b1585-00c7-4c11-a851-b2788731d0bc",
+      "name": "On clicking 'execute'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        -1728,
+        560
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "id": "9be03688-de68-4f74-a0fc-3ef7618fcda2",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        -1728,
+        736
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "jsCode": "// Biến một mảng trong 1 item thành nhiều item riêng\nfunction safeParse(value) {\n  if (typeof value !== 'string') return value;\n  const s = value?.trim?.() ?? '';\n  if (!s || (s[0] !== '{' && s[0] !== '[')) return value;\n  try { return JSON.parse(s); } catch { return value; }\n}\n\nconst all = $items(\"MBWD ERPNext\");\nlet records;\n\n// 1) Trường hợp API trả về mảng ngay ở root\nif (Array.isArray(all[0]?.json)) {\n  records = all[0].json;\n\n// 2) Hoặc gói trong thuộc tính data\n} else if (Array.isArray(all[0]?.json?.data)) {\n  records = all[0].json.data;\n\n// 3) Hoặc đã là nhiều item sẵn\n} else {\n  records = all.map(i => i.json);\n}\n\n// Nếu mỗi record có trường payload dạng string → parse sang object (không bắt buộc)\nreturn records.map(r => {\n  const parsed = ('payload' in r) ? safeParse(r.payload) : r.payload;\n  return { json: { ...r, payload: parsed } };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1120,
+        656
+      ],
+      "id": "a4b05b6c-544c-410c-adb7-cf9e899179d0",
+      "name": "Split"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -880,
+        656
+      ],
+      "id": "ebf10fae-42d8-4b3b-ae8c-704d1ceabc50",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "amount": 0.5
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1120,
+        800
+      ],
+      "id": "d9f3eef3-bd7a-4837-81a5-fc779acb5fdf",
+      "name": "Wait",
+      "webhookId": "0ab5e0ab-6438-4104-a0b1-94754752156c"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "32c56d2b-fe41-4163-bc63-f272cfcea78a",
+              "leftValue": "={{ $json.exists }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -240,
+        656
+      ],
+      "id": "96d57834-5456-4757-b3f8-46e6223912f3",
+      "name": "If",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "jsCode": "const cur = $('Kiểm tra xem dữ liệu có tồn tại').item.json;\n\n// payload chính\nconst p = cur.payload || {};\n\n// lấy item_group = phần tử cuối cùng\nlet itemGroup = p.custom_item_line;\n// lấy group cha = phần tử áp chót\nlet parentItemGroup = p.custom_parent_item_group;\n\nif (Array.isArray(p.item_group_path) && p.item_group_path.length > 0) {\n  itemGroup = p.item_group_path[p.item_group_path.length - 1];\n  if (p.item_group_path.length > 1) {\n    parentItemGroup = p.item_group_path[p.item_group_path.length - 2];\n  }\n}\n\n// tìm standard_rate trong prices (ưu tiên Retail Selling)\nlet standardRate = $input.first().json.payload.standard_rate;\nif (Array.isArray(p.prices)) {\n  const retail = p.prices.find(pr => pr.price_list === \"Retail Selling\");\n  if (retail && Number(retail.price_list_rate) > 0) {\n    standardRate = retail.price_list_rate;\n  } else {\n    // fallback: lấy giá đầu tiên nếu không có Retail Selling\n    const first = p.prices[0];\n    if (first && Number(first.price_list_rate) > 0) {\n      standardRate = first.price_list_rate;\n    }\n  }\n}\n\nconst out = {\n  item_code: p.item_code,\n  item_name: p.item_name,\n  item_group: itemGroup,\n  parent_item_group: parentItemGroup,\n  stock_uom: p.stock_uom,\n  brand: p.brand || \"\",\n  custom_item_billing_code: p.custom_item_billing_code || \"\",\n  custom_item_billing_name: p.custom_item_billing_name || \"\",\n  is_stock_item: 1,\n  standard_rate: standardRate,\n  name_queue: cur.name\n};\n\n\n\nreturn { json: out };\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -64,
+        480
+      ],
+      "id": "a46d0896-1ce0-46d2-94e3-89ac27a4a11f",
+      "name": "[Update] Chuyển đổi dữ liệu"
+    },
+    {
+      "parameters": {
+        "jsCode": "const cur = $node['Kiểm tra xem dữ liệu có tồn tại']?.json || {};\nconst p = cur.payload || {};\n\nlet itemGroup = p.custom_item_line;\nlet parentItemGroup = p.custom_parent_item_group;\n\nif (Array.isArray(p.item_group_path) && p.item_group_path.length > 0) {\n  itemGroup = p.item_group_path[p.item_group_path.length - 1];\n  if (p.item_group_path.length > 1) {\n    parentItemGroup = p.item_group_path[p.item_group_path.length - 2];\n  }\n}\n\n// tìm standard_rate trong prices (ưu tiên Retail Selling)\nlet standardRate = $input.first().json.payload.standard_rate;\nif (Array.isArray(p.prices)) {\n  const retail = p.prices.find(pr => pr.price_list === \"Retail Selling\");\n  if (retail && Number(retail.price_list_rate) > 0) {\n    standardRate = retail.price_list_rate;\n  } else {\n    // fallback: lấy giá đầu tiên nếu không có Retail Selling\n    const first = p.prices[0];\n    if (first && Number(first.price_list_rate) > 0) {\n      standardRate = first.price_list_rate;\n    }\n  }\n}\n\nconst out = {\n  item_code: p.item_code,\n  item_name: p.item_name,\n  item_group: itemGroup,\n  parent_item_group: parentItemGroup,\n  stock_uom: p.stock_uom,\n  brand: p.brand || \"\",\n  custom_item_billing_code: p.custom_invoice_item_code || \"\",\n  custom_item_billing_name: p.custom_invoice_item_name || \"\",\n  is_stock_item: 1,\n  standard_rate: standardRate,\n  name_queue: cur.name\n};\n\n\n\nreturn { json: out };\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -64,
+        672
+      ],
+      "id": "bb763950-cfbc-408a-a213-39e8eaf9f3e8",
+      "name": "[Add] Chuyển đổi dữ liệu"
+    },
+    {
+      "parameters": {
+        "content": "## Sub Workflow",
+        "height": 652,
+        "width": 2523,
+        "color": 6
+      },
+      "id": "4454bbf5-6ea2-4b0b-a68d-0ad6514f82e4",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1888,
+        1024
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {},
+      "id": "3bc6c336-b93f-49c9-aa89-86e4b7648384",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        -1744,
+        1248
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsCode": "// Lấy brand từ input workflow\nconst inputBrand = $node[\"Execute Workflow Trigger\"].json.brand;\n\n// Lấy danh sách brand từ node \"Check Nhãn hiệu\"\nconst brands = $node['Check Nhãn hiệu'].json.data.map(u => (u.ma || '').toUpperCase());\n\n// Chuẩn hóa để so sánh\nconst normalize = s => (s ?? '').toString().trim().toUpperCase();\n\n// Tìm brand trong list\nconst match = brands.find(b => normalize(b) === normalize(inputBrand));\n\nreturn [\n  {\n    json: {\n      input_brand: inputBrand,\n      exists: !!match,\n      existed_name: match ? match.ma : null,\n      existed_data: match || null\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1360,
+        1248
+      ],
+      "id": "741625af-7820-4630-ad1c-0ab0a964c54d",
+      "name": "Kiểm tra xem dữ liệu Brand tồn tại ?"
+    },
+    {
+      "parameters": {
+        "jsCode": "const inputGroup = $node[\"Execute Workflow Trigger\"].json.item_group;\n\nconst item_groups = $node['Check Industry'].json.data.map(u => (u.ma || '').toUpperCase());\n\n// Chuẩn hóa để so sánh\nconst normalize = s => (s ?? '').toString().trim().toUpperCase();\n\n// Tìm brand trong list\nconst match = item_groups.find(b => normalize(b) === normalize(inputGroup));\n\nreturn [\n  {\n    json: {\n      input_group: inputGroup,\n      exists: !!match,\n      existed_name: match ? match.ma : null,\n      existed_data: match || null\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -528,
+        1232
+      ],
+      "id": "e2f7303f-dc04-432f-af48-9806b03be4e7",
+      "name": "Kiểm tra xem dữ liệu Item Group tồn tại ?"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "32c56d2b-fe41-4163-bc63-f272cfcea78a",
+              "leftValue": "={{ $json.exists }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1184,
+        1248
+      ],
+      "id": "ddcff876-7fe8-4f23-b849-0b3c52bcaf03",
+      "name": "If1",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "32c56d2b-fe41-4163-bc63-f272cfcea78a",
+              "leftValue": "={{ $json.exists }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -336,
+        1232
+      ],
+      "id": "354b0e16-f6a9-43df-9812-2d22e765f7f6",
+      "name": "If2",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8d513345-6484-431f-afb7-7cf045c90f4f",
+              "name": "Done",
+              "type": "boolean",
+              "value": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0d52a15b-9433-4e0f-80f9-8d4258a3ac43",
+      "name": "Return",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        80,
+        1216
+      ],
+      "typeVersion": 3.3
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "={{$workflow.id}}",
+          "mode": "id",
+          "cachedResultUrl": "/workflow/=%7B%7B$workflow.id%7D%7D"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "mode": "each",
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        144,
+        672
+      ],
+      "id": "37e20c3e-0c1f-44cf-8719-d3a8527aba26",
+      "name": "Execute Workflow",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{$workflow.id}}",
+          "cachedResultName": "={{$workflow.id}}"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "mode": "each",
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        144,
+        480
+      ],
+      "id": "b19368a0-fb13-4122-8e7a-c4e98fd5df5e",
+      "name": "Execute Workflow1",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Integration Logs",
+        "operation": "create",
+        "parameters": "={\n  \"sync_type\": \"Item\",\n  \"records_processed\": \"{{ $items().length }}\",\n  \"status\": \"Success\",\n  \"log_message\": \"\"\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -512,
+        368
+      ],
+      "id": "1d6b3cab-9b2a-4e1f-9543-bf2d43b1c74d",
+      "name": "Write Logs To ERPNEXT",
+      "executeOnce": true,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "product",
+        "additionalFields": {}
+      },
+      "type": "CUSTOM.mbwdmsCustom",
+      "typeVersion": 1,
+      "position": [
+        -1328,
+        656
+      ],
+      "id": "874c8820-2869-48df-b47d-fcf92d544227",
+      "name": "Lấy danh sách Mặt hàng của MobiworkDMS",
+      "alwaysOutputData": true,
+      "credentials": {
+        "MBWDMSCustomApi": {
+          "id": "2SVxatk3bkSth64j",
+          "name": "MBW DMS Cloud"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "brand",
+        "additionalFields": {}
+      },
+      "type": "CUSTOM.mbwdmsCustom",
+      "typeVersion": 1,
+      "position": [
+        -1552,
+        1248
+      ],
+      "id": "7a93a326-07e2-4cfb-89f8-aafb69afa0dd",
+      "name": "Check Nhãn hiệu",
+      "alwaysOutputData": true,
+      "credentials": {
+        "MBWDMSCustomApi": {
+          "id": "2SVxatk3bkSth64j",
+          "name": "MBW DMS Cloud"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "resource": "brand",
+        "operation": "create",
+        "data": "={\"ma\":\"{{$node[\"Execute Workflow Trigger\"].json.brand}}\", \"ten\":\"{{$node[\"Execute Workflow Trigger\"].json.brand}}\", \"trang_thai\": true, \"stt\": 1 }"
+      },
+      "type": "CUSTOM.mbwdmsCustom",
+      "typeVersion": 1,
+      "position": [
+        -976,
+        1344
+      ],
+      "id": "ed9fcce1-d75f-42ec-a8d1-a95a5b06a961",
+      "name": "Create Brand",
+      "alwaysOutputData": true,
+      "credentials": {
+        "MBWDMSCustomApi": {
+          "id": "2SVxatk3bkSth64j",
+          "name": "MBW DMS Cloud"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "resource": "industry",
+        "additionalFields": {}
+      },
+      "type": "CUSTOM.mbwdmsCustom",
+      "typeVersion": 1,
+      "position": [
+        -752,
+        1232
+      ],
+      "id": "ac1600b8-0617-4278-840c-23335fde9390",
+      "name": "Check Industry",
+      "alwaysOutputData": true,
+      "credentials": {
+        "MBWDMSCustomApi": {
+          "id": "2SVxatk3bkSth64j",
+          "name": "MBW DMS Cloud"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "resource": "product",
+        "operation": "createProduct",
+        "productData": "={\n  \"stt\": 1,\n  \"nhan_hieu\": \"{{ $('[Add] Chuyển đổi dữ liệu').item.json.brand }}\",\n  \"ma_sp\": \"{{ $('[Add] Chuyển đổi dữ liệu').item.json.item_code }}\",\n  \"ten_sp\": \"{{ $('[Add] Chuyển đổi dữ liệu').item.json.item_name }}\",\n  \"nganh_hang\": \"{{ $('[Add] Chuyển đổi dữ liệu').item.json.item_group }}\",\n  \"nha_cung_cap\": \"SupTest1\",\n  \"dvt_chan\": \"{{ $('[Add] Chuyển đổi dữ liệu').item.json.stock_uom }}\",\n  \"dvt_le\": \"{{ $('[Add] Chuyển đổi dữ liệu').item.json.stock_uom }}\",\n  \"hsqd\": 0,\n  \"ma_vach\": \"iujm\",\n  \"gia_nhap\": 1,\n  \"gia_nhap_le\": 1,\n  \"gia_chan\": {{ $('[Add] Chuyển đổi dữ liệu').item.json.standard_rate }},\n  \"gia_le\": {{ $('[Add] Chuyển đổi dữ liệu').item.json.standard_rate }},\n  \"vat\": 1,\n  \"mo_ta\": \" \"\n}"
+      },
+      "type": "CUSTOM.mbwdmsCustom",
+      "typeVersion": 1,
+      "position": [
+        368,
+        672
+      ],
+      "id": "d3af619b-4fa9-497a-9670-66cb7d5b9d81",
+      "name": "Create Product",
+      "alwaysOutputData": true,
+      "credentials": {
+        "MBWDMSCustomApi": {
+          "id": "2SVxatk3bkSth64j",
+          "name": "MBW DMS Cloud"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Code Node sau \"Merge Data Info\"\n\n// Helper chuẩn hóa chuỗi để so sánh\nconst N = s => (s ?? '').toString().trim().toUpperCase();\n\n// Lấy dữ liệu ERP đã split\nconst erpItems = $items().map(i => i.json);\nconsole.log(erpItems)\n\n// Lấy dữ liệu từ DMS\nconst dmsItems = $items(\"Lấy danh sách Mặt hàng của MobiworkDMS\").map(i => i.json);\n\n// Tạo set cho nhanh\nconst dmsSet = new Set(dmsItems.map(x => N(x.ma_sp)));\n\n// Gắn cờ exists\nreturn erpItems.map(r => {\n  const key = N(r.reference_name);\n  return {\n    json: {\n      ...r,\n      exists: dmsSet.has(key),\n      existed_name: dmsSet.has(key) ? key : null\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -624,
+        608
+      ],
+      "id": "33a0f827-ca52-4706-ab32-dcdfc52a6f64",
+      "name": "Kiểm tra xem dữ liệu có tồn tại"
+    },
+    {
+      "parameters": {
+        "resource": "product",
+        "operation": "updateProduct",
+        "productData": "={\n  \"ma_cu\": \"{{ $('[Update] Chuyển đổi dữ liệu').item.json.item_code }}\",\n  \"stt\": 0,\n  \"nhan_hieu\": \"{{ $('[Update] Chuyển đổi dữ liệu').item.json.brand }}\",\n  \"ma_sp\": \"{{ $('[Update] Chuyển đổi dữ liệu').item.json.item_code }}\",\n  \"ten_sp\": \"{{ $('[Update] Chuyển đổi dữ liệu').item.json.item_name }}\",\n  \"nganh_hang\": \"{{ $('[Update] Chuyển đổi dữ liệu').item.json.item_group }}\",\n  \"nha_cung_cap\": \"SupTest1\",\n  \"dvt_chan\": \"{{ $('[Update] Chuyển đổi dữ liệu').item.json.stock_uom }}\",\n  \"dvt_le\": \"{{ $('[Update] Chuyển đổi dữ liệu').item.json.stock_uom }}\",\n  \"hsqd\": 0,\n  \"ma_vach\": \"ggbb\",\n  \"gia_nhap\": 2,\n  \"gia_nhap_le\": 2,\n  \"gia_chan\": {{ $('[Update] Chuyển đổi dữ liệu').item.json.standard_rate }},\n  \"gia_le\": {{ $('[Update] Chuyển đổi dữ liệu').item.json.standard_rate }},\n  \"vat\": 1,\n  \"mo_ta\": \" \"\n}"
+      },
+      "type": "CUSTOM.mbwdmsCustom",
+      "typeVersion": 1,
+      "position": [
+        368,
+        480
+      ],
+      "id": "46df9ede-ddde-4896-971b-208a7ffe04e2",
+      "name": "Update Product",
+      "alwaysOutputData": true,
+      "credentials": {
+        "MBWDMSCustomApi": {
+          "id": "2SVxatk3bkSth64j",
+          "name": "MBW DMS Cloud"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "fields": "reference_doctype,reference_name,operation,payload,name",
+        "filters": {
+          "filter": [
+            {
+              "field": "source_data",
+              "value": "MBW NEXT"
+            },
+            {
+              "field": "status",
+              "operator": "in",
+              "value": "Pending"
+            },
+            {
+              "field": "reference_doctype",
+              "value": "Item"
+            }
+          ]
+        }
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -1504,
+        656
+      ],
+      "id": "d94c7c54-1469-4618-b3af-4eaee31dd52e",
+      "name": "MBWD ERPNext",
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "operation": "update",
+        "parameters": "={\n\"status\": \"Success\"\n}",
+        "recordId": "={{ $('[Add] Chuyển đổi dữ liệu').item.json.name_queue}}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        672,
+        656
+      ],
+      "id": "dbff7230-c88e-47fc-8b99-5cc4ad1a7162",
+      "name": "Update status Success queue",
+      "executeOnce": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "operation": "update",
+        "parameters": "={\n\"status\": \"Failed\"\n}",
+        "recordId": "={{ $('[Add] Chuyển đổi dữ liệu').item.json.name_queue }}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        672,
+        816
+      ],
+      "id": "e6b5a7ba-c9e6-45cf-9881-d7d1f1f5db77",
+      "name": "Update status Failed queue",
+      "executeOnce": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "operation": "update",
+        "parameters": "={\n\"status\": \"Success\"\n}",
+        "recordId": "={{ $('[Update] Chuyển đổi dữ liệu').item.json.name_queue}}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        672,
+        304
+      ],
+      "id": "197ca567-0824-40a1-b71b-a8482233a5ce",
+      "name": "Update status Success queue1",
+      "executeOnce": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "operation": "update",
+        "parameters": "={\n\"status\": \"Failed\"\n}",
+        "recordId": "={{ $('[Update] Chuyển đổi dữ liệu').item.json.name_queue}}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        672,
+        480
+      ],
+      "id": "53a8f6f9-7d4b-4c06-a627-c07abe6866a4",
+      "name": "Update status Failed queue1",
+      "executeOnce": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Integration Logs",
+        "operation": "create",
+        "parameters": "={\n  \"sync_type\": \"Item\",\n  \"records_processed\": \"\",\n  \"status\": \"Failed\",\n  \"log_message\": \"{{$node[\"Execute Workflow Trigger\"].json.item_code}} Item Chưa đồng bộ Item Line\"\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        1328
+      ],
+      "id": "5797e1d6-2196-461a-b536-bdeaa3e02d82",
+      "name": "Write Logs Fail To ERPNEXT",
+      "executeOnce": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "7020cdfc-08fc-482a-9ff4-f5e72c706c23",
+              "leftValue": "={{ $json.operation }}",
+              "rightValue": "Delete",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -448,
+        608
+      ],
+      "id": "8c68cd17-4bcc-47d6-9293-98ab657d5856",
+      "name": "If3",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "resource": "product",
+        "operation": "deleteProduct",
+        "productData": "={\n  \"ma\": [\"{{ $json.payload.item_code }}\"]\n}"
+      },
+      "type": "CUSTOM.mbwdmsCustom",
+      "typeVersion": 1,
+      "position": [
+        96,
+        144
+      ],
+      "id": "7dbc6d47-1b8d-4bf1-bf75-a0198db5427d",
+      "name": "Delete Product",
+      "alwaysOutputData": true,
+      "credentials": {
+        "MBWDMSCustomApi": {
+          "id": "2SVxatk3bkSth64j",
+          "name": "MBW DMS Cloud"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "operation": "update",
+        "parameters": "={\n\"status\": \"Success\"\n}",
+        "recordId": "={{ $('Kiểm tra xem dữ liệu có tồn tại').item.json.name_queue }}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        656,
+        -32
+      ],
+      "id": "22f6a5f6-e132-4247-927a-3832925bce08",
+      "name": "Update status delete Success",
+      "executeOnce": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "operation": "update",
+        "parameters": "={\n\"status\": \"Failed\"\n}",
+        "recordId": "={{ $('Kiểm tra xem dữ liệu có tồn tại').item.json.name_queue }}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        656,
+        128
+      ],
+      "id": "80a04f4e-9480-43a9-8cbb-d9d5d6c2897b",
+      "name": "Update status delete Failed",
+      "executeOnce": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      },
+      "onError": "continueErrorOutput"
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-backup",
+  "repo_owner": "MBW-Digital",
+  "repo_path": "sinhthaihcm/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-09-24T06:32:17.623Z",
+      "updatedAt": "2025-09-24T06:32:17.623Z",
+      "role": "workflow:owner",
+      "workflowId": "IzmIGlRRv0iyNKgh",
+      "projectId": "NLp1g7OOFWKDmygg"
+    }
+  ],
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-09-03T07:48:49.315Z",
+      "updatedAt": "2025-09-03T07:48:49.315Z",
+      "id": "HmMyDMy8FTsYQkDm",
+      "name": "ERPNext"
+    },
+    {
+      "createdAt": "2025-09-09T08:58:23.942Z",
+      "updatedAt": "2025-09-09T08:58:23.942Z",
+      "id": "UusOo5b8CqNpNaGd",
+      "name": "Background Job Queue"
+    },
+    {
+      "createdAt": "2025-09-25T07:56:38.911Z",
+      "updatedAt": "2025-09-25T07:56:38.911Z",
+      "id": "U2rTcFSAg0Nbuwfe",
+      "name": "Đã hoàn thành"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2025-10-06T07:29:47.309Z",
+  "versionId": "99500e43-c3de-4ae8-a85e-60d29a5e2aa5"
+}
