@@ -1,0 +1,282 @@
+{
+  "active": true,
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Chuyển đổi dữ liệu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kiểm tra dữ liệu ĐH tồn tại?": {
+      "main": [
+        [
+          {
+            "node": "Kiểm tra xem dữ liệu DH",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kiểm tra xem dữ liệu DH": {
+      "main": [
+        [
+          {
+            "node": "Kiểm tra tồn tại DH",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kiểm tra tồn tại DH": {
+      "main": [
+        [
+          {
+            "node": "Xóa bản ghi DH",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Add Sale Invoice To Queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Xóa bản ghi DH": {
+      "main": [
+        [
+          {
+            "node": "Add Sale Invoice To Queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chuyển đổi dữ liệu": {
+      "main": [
+        [
+          {
+            "node": "Kiểm tra dữ liệu ĐH tồn tại?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Sale Invoice To Queue": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook Sale Order",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-10-06T01:55:48.644Z",
+  "id": "ooO5S7JcIjYA4041",
+  "isArchived": false,
+  "meta": null,
+  "name": "Webhook DMS Listen - Trả Hàng",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "4abcd8c8-4e04-4366-9d65-12d0db034555",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1280,
+        200
+      ],
+      "id": "0cc5fab4-8bad-4ab9-be21-690ebef527d7",
+      "name": "Webhook",
+      "webhookId": "b7213e25-80b9-4e21-928b-8ba279050f34"
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "operation": "find",
+        "query": "={\n  \"filters\": [\n    [\"reference_name\", \"=\", \"{{ $json.body.data[0].ma_phieu }}\"],\n    [\"reference_doctype\", \"=\", \"Sales Invoice Return\"]\n  ]\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -832,
+        200
+      ],
+      "id": "a63990b8-f3ce-4a1b-a0f2-cf16d74a5395",
+      "name": "Kiểm tra dữ liệu ĐH tồn tại?",
+      "alwaysOutputData": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const arr = $items('Kiểm tra dữ liệu ĐH tồn tại?');\n\n// Dữ liệu trả về có 2 lớp mảng -> lấy phần tử đầu tiên\nconst first = arr[0]?.json?.[0] || {};\n\nreturn [{\n  json: {\n    exists: !!first.name,           // True nếu có giá trị name\n    existed_name: first.name || null,\n    data: first                      // Lưu nguyên dữ liệu record\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -608,
+        200
+      ],
+      "id": "9e071f9e-e877-4b10-86fc-ec9c5a3dd893",
+      "name": "Kiểm tra xem dữ liệu DH"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "32c56d2b-fe41-4163-bc63-f272cfcea78a",
+              "leftValue": "={{ $json.exists }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -384,
+        200
+      ],
+      "id": "fb84e0e3-8e31-40cc-8d8b-879ef201c0c4",
+      "name": "Kiểm tra tồn tại DH",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "operation": "delete",
+        "recordId": "={{ $json.data.name }}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        128
+      ],
+      "id": "c93683c8-8cee-4273-8fe1-de68a30c45ec",
+      "name": "Xóa bản ghi DH",
+      "alwaysOutputData": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  const body = item.json.body || {};\n\n  // Nếu webhook gửi mảng hoặc dạng key số\n  const orders = Object.values(body);\n\n  // Trả ra mỗi đơn hàng thành 1 item riêng\n  return orders.map(order => ({\n    json: {\n      ...item.json,\n      body: {\n        data: [\n          {\n            ...order,\n            reference_doctype: \"Sales Invoice Return\"\n          }\n        ]\n      }\n    }\n  }));\n}).flat();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1056,
+        200
+      ],
+      "id": "64fdbd6c-9e20-45d1-8228-082371686256",
+      "name": "Chuyển đổi dữ liệu"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"status\": \"ok\",\n  \"message\": \"Sale Order has insert Queue\"\n}",
+        "options": {}
+      },
+      "id": "7e32306a-3827-484e-9de6-4738a492cafb",
+      "name": "Respond to Webhook Sale Order",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        288,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "operation": "create",
+        "parameters": "={\n  \"reference_doctype\": \"{{ $('Chuyển đổi dữ liệu').item.json.body.data[0].reference_doctype }}\",\n  \"reference_name\": \"{{ $('Chuyển đổi dữ liệu').item.json.body.data[0].ma_phieu }}\",\n  \"operation\": \"Create\",\n  \"retry_count\": 0,\n  \"status\": \"Pending\",\n  \"payload\": {{ JSON.stringify($('Chuyển đổi dữ liệu').item.json.body.data[0] || {}) }},\n  \"log_message\": \"{{ $('Chuyển đổi dữ liệu').item.json.body.data[0].reference_doctype }} create from Webhook MBW DMS\",\n  \"create_date\": \"\",\n  \"sync_time\": null,\n  \"source_data\": \"MBW DMS\"\n}\n"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        64,
+        200
+      ],
+      "id": "555268c3-1896-4cc8-bafa-80299e73811c",
+      "name": "Add Sale Invoice To Queue",
+      "alwaysOutputData": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-backup",
+  "repo_owner": "MBW-Digital",
+  "repo_path": "sinhthaihcm/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-10-06T01:55:48.644Z",
+      "updatedAt": "2025-10-06T01:55:48.644Z",
+      "role": "workflow:owner",
+      "workflowId": "ooO5S7JcIjYA4041",
+      "projectId": "NLp1g7OOFWKDmygg"
+    }
+  ],
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-09-09T08:58:51.547Z",
+      "updatedAt": "2025-09-09T08:58:51.547Z",
+      "id": "neaSaDNALEghkloE",
+      "name": "MBW DMS"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2025-10-07T15:31:52.217Z",
+  "versionId": "58d30a82-909a-4ff3-8201-24fda9329a3a"
+}
