@@ -1,0 +1,379 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "MBWD ERPNext",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "MBWD ERPNext",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MBWD ERPNext": {
+      "main": [
+        [
+          {
+            "node": "Split",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Write Logs To ERPNEXT",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create a new sale (employee)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a new sale (employee)": {
+      "main": [
+        [
+          {
+            "node": "Update status Success queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update status Success queue": {
+      "main": [
+        [
+          {
+            "node": "Create Sales Person",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Create Sales Person": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Write Logs Create Sale Person",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write Logs Create Sale Person": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-10-06T03:34:29.956Z",
+  "id": "WU7XJjPchNkmCvet",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "[DMS] Đồng bộ dữ liệu Nhân viên ERPNext  -> DMS",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -2080,
+        128
+      ],
+      "id": "f450b678-18ec-402a-aa83-8a5d0ecab27f",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "id": "f143c0c8-f74d-4efc-8ccd-b8f9cef0c775",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        -2080,
+        320
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "fields": "reference_doctype,reference_name,operation,payload,name",
+        "filters": {
+          "filter": [
+            {
+              "field": "source_data",
+              "value": "MBW NEXT"
+            },
+            {
+              "field": "status",
+              "operator": "in",
+              "value": "Pending"
+            },
+            {
+              "field": "reference_doctype",
+              "value": "Employee"
+            }
+          ]
+        }
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -1856,
+        240
+      ],
+      "id": "357eda0e-7daa-4a71-a47f-ee6d6f92131c",
+      "name": "MBWD ERPNext",
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Biến một mảng trong 1 item thành nhiều item riêng\nfunction safeParse(value) {\n  if (typeof value !== 'string') return value;\n  const s = value?.trim?.() ?? '';\n  if (!s || (s[0] !== '{' && s[0] !== '[')) return value;\n  try { return JSON.parse(s); } catch { return value; }\n}\n\nconst all = $input.all();\nlet records;\n\n// 1) Trường hợp API trả về mảng ngay ở root\nif (Array.isArray(all[0]?.json)) {\n  records = all[0].json;\n\n// 2) Hoặc gói trong thuộc tính data\n} else if (Array.isArray(all[0]?.json?.data)) {\n  records = all[0].json.data;\n\n// 3) Hoặc đã là nhiều item sẵn\n} else {\n  records = all.map(i => i.json);\n}\n\n// Nếu mỗi record có trường payload dạng string → parse sang object (không bắt buộc)\nreturn records.map(r => {\n  const parsed = ('payload' in r) ? safeParse(r.payload) : r.payload;\n  return { json: { ...r, payload: parsed } };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1632,
+        240
+      ],
+      "id": "bc7bad1e-0710-4d49-97d7-aa9563a317f2",
+      "name": "Split"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "3b4044b7-a425-4477-a564-840f15667bb2",
+      "name": "Loop Over Items",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        -1408,
+        240
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "resource": "sale",
+        "operation": "createSale",
+        "saleData": "={\n  \"email\": \"{{ $json.payload.company_email }}\",\n  \"name\": \"{{ $json.payload.employee_name }}\",\n  \"code\": \"{{ $json.payload.employee }}\"\n} "
+      },
+      "type": "CUSTOM.mbwdmsCustom",
+      "typeVersion": 1,
+      "position": [
+        -1184,
+        240
+      ],
+      "id": "31c3ea00-dbaf-4df3-8d3e-c23140bcb4d3",
+      "name": "Create a new sale (employee)",
+      "credentials": {
+        "MBWDMSCustomApi": {
+          "id": "2SVxatk3bkSth64j",
+          "name": "MBW DMS Cloud"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Integration Logs",
+        "operation": "create",
+        "parameters": "={\n  \"sync_type\": \"Employee\",\n  \"records_processed\": \"{{ $('MBWD ERPNext').all().length}}\",\n  \"status\": \"Success\",\n  \"log_message\": \"Đồng bộ dữ liệu Employee thành công\"\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -1184,
+        48
+      ],
+      "id": "99384b1f-2132-4883-98c6-d491b4747960",
+      "name": "Write Logs To ERPNEXT",
+      "executeOnce": true,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -288,
+        320
+      ],
+      "id": "6dd37f9c-6525-4cbb-894e-84db828900df",
+      "name": "Wait",
+      "webhookId": "f3fd830b-7bef-41fd-8917-6ff19cd581f3"
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "operation": "update",
+        "parameters": "={\n\"status\": \"Success\"\n}",
+        "recordId": "={{ $('Loop Over Items').item.json.name }}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -976,
+        240
+      ],
+      "id": "905fac04-7ea8-4a2b-b305-f3c0220fb7ff",
+      "name": "Update status Success queue",
+      "executeOnce": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "doctype": "Sales Person",
+        "operation": "create",
+        "parameters": "={\n  \"sales_person_name\": \"{{ $('Loop Over Items').item.json.payload.employee_name + '_' + $('Loop Over Items').item.json.payload.employee }}\",\n  \"employee\": \"{{ $json.reference_name }}\"\n}\n"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -736,
+        240
+      ],
+      "id": "bd0b2fc6-d2ec-4786-b9bc-2207e8b2cdd5",
+      "name": "Create Sales Person",
+      "alwaysOutputData": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Integration Logs",
+        "operation": "create",
+        "parameters": "{\n  \"sync_type\": \"Sale Person\",\n  \"records_processed\": \"1\",\n  \"status\": \"Failed\",\n  \"log_message\": \"\"\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -512,
+        176
+      ],
+      "id": "109e741f-cccb-4f7a-a0f2-a0722be35a7f",
+      "name": "Write Logs Create Sale Person",
+      "executeOnce": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-backup",
+  "repo_owner": "MBW-Digital",
+  "repo_path": "sinhthaihcm/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-10-06T03:34:29.956Z",
+      "updatedAt": "2025-10-06T03:34:29.956Z",
+      "role": "workflow:owner",
+      "workflowId": "WU7XJjPchNkmCvet",
+      "projectId": "NLp1g7OOFWKDmygg"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-10-06T10:55:25.719Z",
+  "versionId": "0d9716a5-41fc-43cc-b5f6-f117b227a137"
+}
