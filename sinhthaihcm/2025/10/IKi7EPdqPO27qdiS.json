@@ -1,0 +1,282 @@
+{
+  "active": true,
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Chuyển đổi dữ liệu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kiểm tra dữ liệu ĐH tồn tại?": {
+      "main": [
+        [
+          {
+            "node": "Kiểm tra xem dữ liệu DH",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kiểm tra xem dữ liệu DH": {
+      "main": [
+        [
+          {
+            "node": "Kiểm tra tồn tại DH",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kiểm tra tồn tại DH": {
+      "main": [
+        [
+          {
+            "node": "Xóa bản ghi DH",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Add Sale Invoice To Queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Xóa bản ghi DH": {
+      "main": [
+        [
+          {
+            "node": "Add Sale Invoice To Queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chuyển đổi dữ liệu": {
+      "main": [
+        [
+          {
+            "node": "Kiểm tra dữ liệu ĐH tồn tại?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Sale Invoice To Queue": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook Sale Order",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-10-06T01:55:04.489Z",
+  "id": "IKi7EPdqPO27qdiS",
+  "isArchived": false,
+  "meta": null,
+  "name": "Webhook DMS Listen - Bán Hàng",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "8ec546f7-a11c-4c46-960e-801d85bddbed",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -640,
+        64
+      ],
+      "id": "4ace7a58-0cd8-4569-a59c-13fe17ab7550",
+      "name": "Webhook",
+      "webhookId": "b7213e25-80b9-4e21-928b-8ba279050f34"
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "operation": "find",
+        "query": "={\n  \"filters\": [\n    [\"reference_name\", \"=\", \"{{ $json.body.data[0].ma_phieu }}\"],\n    [\"reference_doctype\", \"=\", \"Sales Invoice\"]\n  ]\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -192,
+        64
+      ],
+      "id": "1872a759-7154-42f1-afd2-945330fd41cb",
+      "name": "Kiểm tra dữ liệu ĐH tồn tại?",
+      "alwaysOutputData": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const arr = $items('Kiểm tra dữ liệu ĐH tồn tại?');\n\n// Dữ liệu trả về có 2 lớp mảng -> lấy phần tử đầu tiên\nconst first = arr[0]?.json?.[0] || {};\n\nreturn [{\n  json: {\n    exists: !!first.name,           // True nếu có giá trị name\n    existed_name: first.name || null,\n    data: first                      // Lưu nguyên dữ liệu record\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        32,
+        64
+      ],
+      "id": "4133d990-a9f1-4ffe-894e-ca9db8eab0aa",
+      "name": "Kiểm tra xem dữ liệu DH"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "32c56d2b-fe41-4163-bc63-f272cfcea78a",
+              "leftValue": "={{ $json.exists }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        256,
+        64
+      ],
+      "id": "bae79ed6-8c89-479f-92b4-627fb8840e2b",
+      "name": "Kiểm tra tồn tại DH",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "operation": "delete",
+        "recordId": "={{ $json.data.name }}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        480,
+        -16
+      ],
+      "id": "991af154-39ba-49d6-9d22-3a2af76f1a2b",
+      "name": "Xóa bản ghi DH",
+      "alwaysOutputData": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  const body = item.json.body || {};\n\n  // Nếu webhook gửi mảng hoặc dạng key số\n  const orders = Object.values(body);\n\n  // Trả ra mỗi đơn hàng thành 1 item riêng\n  return orders.map(order => ({\n    json: {\n      ...item.json,\n      body: {\n        data: [\n          {\n            ...order,\n            reference_doctype: \"Sales Invoice\"\n          }\n        ]\n      }\n    }\n  }));\n}).flat();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -416,
+        64
+      ],
+      "id": "8cd9e8cc-6ab4-48b4-9c92-87d606b8a517",
+      "name": "Chuyển đổi dữ liệu"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"status\": \"ok\",\n  \"message\": \"Sale Order has insert Queue\"\n}",
+        "options": {}
+      },
+      "id": "7f75add3-d0a9-416b-8663-d5a6d0733f07",
+      "name": "Respond to Webhook Sale Order",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        928,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "operation": "create",
+        "parameters": "={\n  \"reference_doctype\": \"{{ $('Chuyển đổi dữ liệu').item.json.body.data[0].reference_doctype }}\",\n  \"reference_name\": \"{{ $('Chuyển đổi dữ liệu').item.json.body.data[0].ma_phieu }}\",\n  \"operation\": \"Create\",\n  \"retry_count\": 0,\n  \"status\": \"Pending\",\n  \"payload\": {{ JSON.stringify($('Chuyển đổi dữ liệu').item.json.body.data[0] || {}) }},\n  \"log_message\": \"{{ $('Chuyển đổi dữ liệu').item.json.body.data[0].reference_doctype }} create from Webhook MBW DMS\",\n  \"create_date\": \"\",\n  \"sync_time\": null,\n  \"source_data\": \"MBW DMS\"\n}\n"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        704,
+        64
+      ],
+      "id": "047e8e0a-9714-4040-af0b-2444217d9c29",
+      "name": "Add Sale Invoice To Queue",
+      "alwaysOutputData": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-backup",
+  "repo_owner": "MBW-Digital",
+  "repo_path": "sinhthaihcm/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-10-06T01:55:04.489Z",
+      "updatedAt": "2025-10-06T01:55:04.489Z",
+      "role": "workflow:owner",
+      "workflowId": "IKi7EPdqPO27qdiS",
+      "projectId": "NLp1g7OOFWKDmygg"
+    }
+  ],
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-09-09T08:58:51.547Z",
+      "updatedAt": "2025-09-09T08:58:51.547Z",
+      "id": "neaSaDNALEghkloE",
+      "name": "MBW DMS"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2025-10-07T07:45:33.712Z",
+  "versionId": "f4da516d-c69e-4fd3-a5a7-05195d6a1c3c"
+}
