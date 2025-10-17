@@ -1,0 +1,1132 @@
+{
+  "active": false,
+  "connections": {
+    "On clicking 'execute'": {
+      "main": [
+        [
+          {
+            "node": "MBWD ERPNext",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "MBWD ERPNext",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MBWD ERPNext": {
+      "main": [
+        [
+          {
+            "node": "Lấy danh sách kho hàng",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge Data Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Merge Data Info",
+            "type": "main",
+            "index": 1
+          }
+        ],
+        [
+          {
+            "node": "Lấy đơn hàng trong ERPNext",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Tìm kiếm nhân viên sale",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kiểm tra xem dữ liệu có tồn": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[Add] Chuyển đổi dữ liệu": {
+      "main": [
+        [
+          {
+            "node": "Kiểm tra danh mục Routing Sales",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Data Info": {
+      "main": [
+        [
+          {
+            "node": "Write Logs To ERPNEXT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Sync Item Status Success": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Thêm mới Đơn Hàng": {
+      "main": [
+        [
+          {
+            "node": "Nếu trả trước tạo phiếu thu",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update Sync Order Status Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lấy đơn hàng trong ERPNext": {
+      "main": [
+        [
+          {
+            "node": "Kiểm tra xem dữ liệu có tồn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lấy danh sách kho hàng": {
+      "main": [
+        [
+          {
+            "node": "Lấy danh sách VAT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[Add] Chuyển đổi dữ liệu Log": {
+      "main": [
+        [
+          {
+            "node": "Update Sync Item Status Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Sync Order Status Error": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tìm kiếm nhân viên sale": {
+      "main": [
+        [
+          {
+            "node": "Tìm kiếm khách hàng",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Nếu trả trước tạo phiếu thu": {
+      "main": [
+        [
+          {
+            "node": "Create Payment Entry (Sale Order)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "[Add] Chuyển đổi dữ liệu Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Payment Entry (Sale Order)": {
+      "main": [
+        [
+          {
+            "node": "[Add] Chuyển đổi dữ liệu Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lấy danh sách VAT": {
+      "main": [
+        [
+          {
+            "node": "Split",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kiểm tra danh mục Promotion Campaign": {
+      "main": [
+        [
+          {
+            "node": "Kiểm tra Promotion Campaign tồn tại?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[Add] Lấy danh sách CTKM": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Promotion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Promotion": {
+      "main": [
+        [
+          {
+            "node": "Thêm mới Đơn Hàng",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Kiểm tra danh mục Promotion Campaign",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kiểm tra Promotion Campaign tồn tại?": {
+      "main": [
+        [
+          {
+            "node": "Nếu chưa có",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Nếu chưa có": {
+      "main": [
+        [
+          {
+            "node": "Pending Add Promotion Campign",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Thêm mới Promotion Campaign",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Thêm mới Promotion Campaign": {
+      "main": [
+        [
+          {
+            "node": "Pending Add Promotion Campign",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pending Add Promotion Campign": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Promotion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kiểm tra danh mục Routing Sales": {
+      "main": [
+        [
+          {
+            "node": "Kiểm tra Routing Sales tồn tại?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kiểm tra Routing Sales tồn tại?": {
+      "main": [
+        [
+          {
+            "node": "Nếu chưa có Router Sale",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Thêm mới Router Sale": {
+      "main": [
+        [
+          {
+            "node": "[Add] Lấy danh sách CTKM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Nếu chưa có Router Sale": {
+      "main": [
+        [
+          {
+            "node": "[Add] Lấy danh sách CTKM",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Thêm mới Router Sale",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tìm kiếm khách hàng": {
+      "main": [
+        [
+          {
+            "node": "[Add] Chuyển đổi dữ liệu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-10-16T16:08:42.600Z",
+  "id": "kwMeAdRjt1gpWKU9",
+  "isArchived": false,
+  "meta": null,
+  "name": "[ERPNext] Cập nhật dữ liệu Đơn bán hàng từ Queue sang Sale Invoice Bản Mới",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "a5aa4de8-abba-4e20-92eb-1a87d347672e",
+      "name": "On clicking 'execute'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        -3984,
+        128
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 2
+            }
+          ]
+        }
+      },
+      "id": "24075b50-c07e-4d51-9f92-c48522271ba3",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        -3968,
+        448
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "fields": "reference_doctype,reference_name,operation,payload,name",
+        "filters": {
+          "filter": [
+            {
+              "field": "source_data",
+              "value": "MBW DMS"
+            },
+            {
+              "field": "status",
+              "operator": "in",
+              "value": "Pending"
+            },
+            {
+              "field": "reference_doctype",
+              "value": "Sale Order"
+            }
+          ]
+        }
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -3728,
+        320
+      ],
+      "id": "1f9e5b1b-7936-43ab-9644-fa9fb29d0a63",
+      "name": "MBWD ERPNext",
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Biến một mảng trong 1 item thành nhiều item riêng\nfunction safeParse(value) {\n  if (typeof value !== 'string') return value;\n  const s = value?.trim?.() ?? '';\n  if (!s || (s[0] !== '{' && s[0] !== '[')) return value;\n  try { return JSON.parse(s); } catch { return value; }\n}\n\nconst all =  $items(\"MBWD ERPNext\", 0, 0);\nlet records;\n\n// 1) Trường hợp API trả về mảng ngay ở root\nif (Array.isArray(all[0]?.json)) {\n  records = all[0].json;\n\n// 2) Hoặc gói trong thuộc tính data\n} else if (Array.isArray(all[0]?.json?.data)) {\n  records = all[0].json.data;\n\n// 3) Hoặc đã là nhiều item sẵn\n} else {\n  records = all.map(i => i.json);\n}\n\n// Nếu mỗi record có trường payload dạng string → parse sang object (không bắt buộc)\nreturn records.map(r => {\n  const parsed = ('payload' in r) ? safeParse(r.payload) : r.payload;\n  return { json: { ...r, payload: parsed } };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3168,
+        320
+      ],
+      "id": "9ff2168b-72b4-463e-a647-70cf2a437019",
+      "name": "Split"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -2912,
+        320
+      ],
+      "id": "8413bb79-8642-4ef5-9520-3ad27223f499",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "amount": 0.5
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        368,
+        688
+      ],
+      "id": "fe697dce-4c7e-48ea-91c8-ca57387e9d13",
+      "name": "Wait",
+      "webhookId": "409f450b-8c1c-42db-b4c1-970930a96609"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "32c56d2b-fe41-4163-bc63-f272cfcea78a",
+              "leftValue": "={{ $json.exists }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -2304,
+        240
+      ],
+      "id": "1363a60c-a0dc-4cc1-b283-b88972979562",
+      "name": "If",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "jsCode": "const arr = $items('Lấy đơn hàng trong ERPNext'); \n\n// Kiểm tra xem item đầu tiên có field name không\nconst first = arr[0]?.json || {};\n\nreturn [{\n  json: {\n    exists: !!first.name,   // true nếu có giá trị name\n    existed_name: first.name || null,\n    data: arr[0]?.json || null,\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2512,
+        240
+      ],
+      "id": "8f3ff5d1-6e2d-4596-af32-cea951bc0601",
+      "name": "Kiểm tra xem dữ liệu có tồn"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ===== Lấy dữ liệu từ node \"Loop Over Items\" =====\nconst cur = $('Loop Over Items').item.json;\nconst p = cur.payload || {};\n// ✅ Lấy thông tin tuyến (nếu có)\nconst route = p.tuyen?.viewData || \"\";\nconst routeId = p.tuyen?.code || \"\";\n// ===== Lấy map kho từ node \"ERPNext Warehouses\" =====\nconst warehouses = $('Lấy danh sách kho hàng').item.json;\n\n// ===== Lấy danh sách VAT từ node \"Lấy danh sách VAT\" =====\nconst vatList = $('Lấy danh sách VAT').item.json || [];\n\n// --------------------\n// Hàm tìm kho theo custom_warehouse_code\n// --------------------\nfunction findWarehouseName(code) {\n  if (!code) return null;\n  const w = warehouses.find(w => w.custom_warehouse_code === code);\n  return w ? w.name : null;\n}\n\n// --------------------\n// Hàm tìm tên/ID VAT theo mã VAT (hoặc phần trăm VAT)\n// --------------------\nfunction findVatAccount(vatValue) {\n  if (!vatValue) return null;\n  // ví dụ: vatValue = 8 → tìm trong custom_vat_rate = 8 hoặc name = \"VAT 8%\"\n  const v = vatList.find(v =>\n    v.custom_vat_rate === Number(vatValue) ||\n    v.name?.includes(`${vatValue}`) ||\n    v.title?.includes(`${vatValue}`)\n  );\n  return v ? v.name : null;\n}\n\n// --------------------\n// Hàm format ngày về \"YYYY-MM-DD\" (GMT+7)\n// --------------------\nfunction formatDate(dateStr) {\n  if (!dateStr) return null;\n  try {\n    const d = new Date(dateStr);\n    if (isNaN(d.getTime())) return null;\n    // Cộng thêm 7 tiếng (7 * 60 * 60 * 1000 ms)\n    const vnTime = new Date(d.getTime() + 7 * 60 * 60 * 1000);\n    return vnTime.toISOString().split('T')[0];\n  } catch {\n    return null;\n  }\n}\n\n// --------------------\n// 1. Chuẩn hoá danh sách sản phẩm\n// --------------------\nconst mainProducts = Array.isArray(p.san_pham) ? p.san_pham : [];\nconst promoProducts = Array.isArray(p.san_pham_km) ? p.san_pham_km : [];\npromoProducts.forEach(sp => sp.is_km = true);\nconst products = [...mainProducts, ...promoProducts];\n\nconst allProducts = products.map(sp => ({\n  item_code: (sp.ma_sp || sp.ma_sp_km || \"\").trim(),\n  item_name: (sp.ten_sp || sp.ten_sp_km || \"\").trim(),\n  warehouse: (sp.ma_kho_xuat || sp.ma_kho_xuat_km || \"\").trim(),\n  qty: Number(sp.so_luong || sp.so_luong_km || 0),\n  rate: sp.is_km ? 0 : Number(sp.don_gia || 0),\n  amount: sp.is_km ? 0 : Number(sp.thanh_tien || 0),\n  discount_amount: Number(sp.chiet_khau || 0),\n  discount_npp: Number(sp.chiet_khau_npp || 0),\n  vat_rate: Number(sp.vat || sp.vat_sp || 0),\n  vat_account: findVatAccount(Number(sp.vat || sp.vat_sp || 0)), // ✅ Gắn tên VAT từ ERPNext\n  note: (sp.ghi_chu || sp.ghi_chu_km || \"\").trim(),\n  is_promotion: !!sp.is_km,\n  promotion_code: (sp.ctkm || \"\").trim()\n}));\n// 4. Tính tổng chiết khấu từ danh sách sản phẩm\n// --------------------\nconst totalItemDiscount = allProducts.reduce((sum, item) => {\n  return sum + (Number(item.discount_amount) || 0);\n}, 0);\n// --------------------\n// 2. Chuẩn hoá thông tin đơn hàng\n// --------------------\nconst saleOrder = {\n  reference_doctype: cur.reference_doctype || \"Sale Order\",\n  reference_name: cur.reference_name || \"\",\n  operation: cur.operation || \"Create\",\n  name: cur.name || \"\",\n  order_code: (p.ma_phieu || \"\").trim(),\n  customer_code: (p.ma_kh || \"\").trim(),\n  customer_name: (p.ten_kh || \"\").trim(),\n  phone: (p.sdt || \"\").trim(),\n  address: (p.dia_chi || \"\").trim(),\n  ma_nhom:(p.ma_nhom || \"\").trim(),\n  order_status: \"To Deliver and Bill\",\n  order_date: formatDate(p.ngay_dat),\n\n  total_amount: Number(p.tong_tien_hang || 0),\n  total_tax: Number(p.tong_tien_vat || 0),\n  order_discount: Number(p.ck_don_hang || 0),\n  grand_total: Number(p.phai_thanh_toan || 0),\n\n  // 💰 Debit (thanh toán trước)\n  debit: Number(p.thanh_toan_truoc || p.debit || p.tra_truoc || 0),\n\n  customer_group_code: (p.ma_nhom || \"\").trim(),\n  customer_group_name: (p.ten_nhom || \"\").trim(),\n\n  order_by: (p.ten_nguoi_dat || \"\").trim(),\n  approved_by: (p.nguoi_duyet || \"\").trim(),\n  approval_date: formatDate(p.ngay_duyet),\n\n  created_by: (p.nguoi_tao || \"\").trim(),\n  created_at: formatDate(p.ngay_tao),\n  updated_by: (p.nguoi_sua || \"\").trim(),\n  updated_at: formatDate(p.ngay_sua),\n\n  invoice_address: (p.dia_chi_xuat_hoa_don || \"\").trim(),\n  invoice_code: (p.ma_xuat_hoa_don || \"\").trim(),\n  tax_code: (p.ma_so_thue || \"\").trim(),\n  cccd: (p.cccd || \"\").trim(),\n  thue15: Number(p.thue15 || 0),\n  invoice_name: (p.ten_xuat_hoa_don || \"\").trim()\n};\n\n// --------------------\n// 3. Chuẩn hoá custom_promotion từ p.promotion\n// --------------------\nconst promotions = [];\nif (Array.isArray(p.promotion)) {\n  for (const km of p.promotion) {\n    for (const pr of km.product || []) {\n      promotions.push({\n        promotion_code: km.id || \"\",\n        promotion_campaign: km.id || \"\",\n        promotion_name: km.ten_khuyen_mai || \"\",\n        promotion_type: km.ptype?.value || \"\",\n        item_code: pr.ma_san_pham || \"\",\n        item_name: pr.ten_san_pham || \"\",\n        promo_qty: Number(pr.so_luong) || 0,\n        uom: pr.don_vi_tinh?.viewData || \"\",\n        discount_amount: 0\n      });\n    }\n  }\n}\n\n// --------------------\n// 5. Ghép lại payload cho ERPNext\n// --------------------\nconst erpNextPayload = {\n  docstatus: 1,\n  doctype: \"Sales Order\",\n  naming_series: \"SO-.YYYY.-\",\n  sales_person:\n    $('Tìm kiếm nhân viên sale').first().json['0'].employee_name + \"_\" +\n   $('Tìm kiếm nhân viên sale').first().json['0'].name ,\n  transaction_date: saleOrder.order_date,\n  delivery_date: saleOrder.order_date,\n\n  order_type: \"Sales\",\n  status: saleOrder.order_status,\n\n  ignore_pricing_rule: true,\n  custom_router_code:routeId,\n  custom_router:route,\n  customer: saleOrder.customer_code,\n  custom_customer_code: saleOrder.customer_code,\n  custom_sales_order_dms_id: saleOrder.order_code,\n  custom_customer_group_code: saleOrder.customer_group_code,\n  custom_customer_group_name: saleOrder.customer_group_name,\n\n  contact_mobile: saleOrder.phone,\n  contact_address: saleOrder.address,\n\n  custom_order_by: saleOrder.order_by,\n  custom_approved_by: saleOrder.approved_by,\n  custom_approval_date: saleOrder.approval_date,\n\n  custom_created_by: saleOrder.created_by,\n  custom_created_at: saleOrder.created_at,\n  custom_updated_by: saleOrder.updated_by,\n  custom_updated_at: saleOrder.updated_at,\n  custom_departments_employee_dms:saleOrder.ma_nhom,\n\n  custom_invoice_address: saleOrder.invoice_address,\n  custom_customer_billing_code: saleOrder.invoice_code,\n  custom_tax_code: saleOrder.tax_code,\n  custom_personal_id_number: saleOrder.cccd,\n  custom_customer_billing_name: saleOrder.invoice_name,\n  territory:$input.first().json['0'].territory ,\n  routing_sales: route,\n  total: saleOrder.total_amount,\n  total_taxes_and_charges: saleOrder.total_tax,\n  // ✅ Cộng tổng chiết khấu item vào chiết khấu đơn hàng\n  discount_amount: saleOrder.order_discount + totalItemDiscount,\n  grand_total: saleOrder.grand_total,\n\n  // 💵 Mapping thêm field debit\n  custom_debit: saleOrder.debit,\n// ✅ Thêm tổng chiết khấu sản phẩm (mới)\n  custom_item_discount_amount: totalItemDiscount,\n  custom_order_discount_amount:saleOrder.order_discount,\n  // ✅ Danh sách sản phẩm có VAT\n  items: allProducts.map(item => {\n    const base = {\n      item_code: item.item_code,\n      item_name: item.item_name,\n      warehouse: findWarehouseName(item.warehouse),\n      qty: item.qty,\n      rate: item.rate,\n      amount: item.amount,\n      custom_dms_discount_amount: item.discount_amount,\n      is_free_item: item.is_promotion ? 1 : 0,\n      custom_promotion_code: item.promotion_code,\n      custom_vat_rate: item.vat_rate,\n      item_tax_template: item.vat_account, // ✅ Gắn VAT từ ERPNext\n      description: item.note\n    };\n    if (item.is_promotion) base.price_list_rate = 0;\n    return base;\n  }),\n\n  custom_promotion: promotions\n};\n\n// --------------------\n// 6. Trả dữ liệu ra ngoài\n// --------------------\nreturn { json: erpNextPayload };\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1664,
+        256
+      ],
+      "id": "6b46375b-ebb9-405d-86ce-d3d5053917c4",
+      "name": "[Add] Chuyển đổi dữ liệu"
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Integration Logs",
+        "operation": "create",
+        "parameters": "={\n  \"sync_type\": \"Item\",\n  \"records_processed\": \"{{ $items().length }}\",\n  \"status\": \"Success\",\n  \"log_message\": \"\"\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -2512,
+        16
+      ],
+      "id": "59f85dea-dc57-4bd7-a027-6924fe632f45",
+      "name": "Write Logs To ERPNEXT",
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "mergeByIndex",
+        "join": "inner"
+      },
+      "name": "Merge Data Info",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 1,
+      "position": [
+        -2704,
+        16
+      ],
+      "id": "2909b7e5-4dd5-4f07-a410-a95eb39013dc"
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "operation": "update",
+        "parameters": "={\"status\":\"Success\"}",
+        "recordId": "={{ $('Loop Over Items').item.json.name }}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        256,
+        64
+      ],
+      "id": "93487b9e-fe62-4a95-9fb3-e2948dcbde3b",
+      "name": "Update Sync Item Status Success",
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "doctype": "Sales Order",
+        "operation": "create",
+        "parameters": "={{ JSON.stringify($node[\"[Add] Chuyển đổi dữ liệu\"].json) }}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -896,
+        320
+      ],
+      "id": "6fc6e2e1-7b8e-412c-84cd-7ea651e3d32c",
+      "name": "Thêm mới Đơn Hàng",
+      "alwaysOutputData": false,
+      "retryOnFail": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "doctype": "Sales Order",
+        "operation": "find",
+        "query": "={\n  \"filters\": [\n    [\"custom_sales_order_dms_id\", \"=\", \"{{ $json.payload.ma_phieu }}\"]\n  ]\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -2704,
+        240
+      ],
+      "id": "c019b418-620f-4400-bcc6-d07225c3b113",
+      "name": "Lấy đơn hàng trong ERPNext",
+      "alwaysOutputData": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "doctype": "Warehouse",
+        "fields": "name,custom_warehouse_code"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -3520,
+        320
+      ],
+      "id": "ac184fe1-09ba-4583-a060-983143a82b9e",
+      "name": "Lấy danh sách kho hàng",
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ===== Lấy dữ liệu từ node \"Loop Over Items\" =====\nconst cur = $('[Add] Chuyển đổi dữ liệu').item.json;\n\n\n// Kiểm tra xem có mảng address không\nif (!cur || !Array.isArray(cur.address)) {\n  return [];\n}\n\n// Trả về từng địa chỉ như một item riêng\nreturn cur.address.map(addr => ({ json: addr }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        16,
+        208
+      ],
+      "id": "aaeafa67-994d-4689-8ded-2b4d94acaad3",
+      "name": "[Add] Chuyển đổi dữ liệu Log",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "operation": "update",
+        "parameters": "={\"status\":\"Failed\"}",
+        "recordId": "={{ $('Loop Over Items').item.json.name }}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        16,
+        400
+      ],
+      "id": "384883de-042d-4339-b4e7-c90b7e0d6474",
+      "name": "Update Sync Order Status Error",
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "doctype": "Employee",
+        "operation": "find",
+        "query": "={\n  \"filters\": [\n    [\"employee_name\", \"=\", \"{{ $('Loop Over Items').item.json.payload.ten_nguoi_dat }}\"]\n  ]\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -2096,
+        256
+      ],
+      "id": "610e8766-359c-481f-9b29-27665270651c",
+      "name": "Tìm kiếm nhân viên sale",
+      "alwaysOutputData": false,
+      "retryOnFail": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "32c56d2b-fe41-4163-bc63-f272cfcea78a",
+              "leftValue": "={{ $('[Add] Chuyển đổi dữ liệu').item.json.custom_debit }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            },
+            {
+              "id": "8fa6310e-7fc5-47b5-9df3-426bfeda34fc",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -640,
+        192
+      ],
+      "id": "75710a4d-39d6-4b54-8f3f-3f549237ce78",
+      "name": "Nếu trả trước tạo phiếu thu",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "doctype": "Payment Entry",
+        "operation": "create",
+        "parameters": "={\n  \"payment_type\": \"Receive\",\n  \"party_type\": \"Customer\",\n  \"party\": \"{{ $('Thêm mới Đơn Hàng').item.json.customer }}\",\n  \"party_name\": \"{{ $('Thêm mới Đơn Hàng').item.json.customer_name }}\",\n  \"paid_amount\": {{ $('[Add] Chuyển đổi dữ liệu').item.json.custom_debit }},\n   \"received_amount\": {{ $('[Add] Chuyển đổi dữ liệu').item.json.custom_debit }},\n  \"paid_to\": \"1111 - Tiền Việt Nam - TEST\",\n  \"paid_to_account_currency\": \"VND\",\n  \"mode_of_payment\":\"Cash\",\n  \"docstatus\": 0,\n  \"references\": [\n    {\n      \"reference_doctype\": \"Sales Order\",\n      \"reference_name\": \"{{ $('Thêm mới Đơn Hàng').item.json.name }}\",\n      \"doctype\": \"Payment Entry Reference\",\n      \"allocated_amount\": {{ $('[Add] Chuyển đổi dữ liệu').item.json.custom_debit }}\n    }\n  ]\n}\n"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        0
+      ],
+      "id": "3ce99fc2-1fd2-4ab2-8611-fde83573ac35",
+      "name": "Create Payment Entry (Sale Order)",
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "doctype": "Item Tax Template",
+        "operation": "find",
+        "query": "{\n  \"fields\": [\n    \"name\",\"title\",\n    \"`tabItem Tax Template Detail`.tax_rate\"\n  ]\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -3328,
+        320
+      ],
+      "id": "35dd40ba-0ad2-4237-9e4a-5528c888269c",
+      "name": "Lấy danh sách VAT",
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "doctype": "Promotion Campaign",
+        "operation": "find",
+        "query": "={\n  \"filters\": [\n    [\"promotion_code\", \"=\", \"{{ $json.promotion_code }}\"]\n  ]\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -896,
+        640
+      ],
+      "id": "b1b2bd16-4067-443f-b3dd-852f7583f581",
+      "name": "Kiểm tra danh mục Promotion Campaign",
+      "alwaysOutputData": false,
+      "retryOnFail": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ===== Lấy dữ liệu từ node \"Loop Over Items\" =====\nconst cur = $('[Add] Chuyển đổi dữ liệu').item.json;\nreturn (cur.custom_promotion || []).map(x => ({ json: x }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1872,
+        464
+      ],
+      "id": "6dd0e371-955c-4796-90bd-973e88d1e316",
+      "name": "[Add] Lấy danh sách CTKM",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -1232,
+        464
+      ],
+      "id": "58bb80c1-9cb4-4f14-b8f2-06bedada46d1",
+      "name": "Loop Over Promotion"
+    },
+    {
+      "parameters": {
+        "jsCode": "const arr = $items('Kiểm tra danh mục Promotion Campaign'); \n\n// nếu không có item nào -> trả false\nif (!Array.isArray(arr) || arr.length === 0) {\n  return [{ json: { exists: false, existed_name: null, data: null } }];\n}\n\n// lấy json của item đầu\nlet json0 = arr[0]?.json;\n\n// nếu json0 là một mảng (vd: [[{...}]]) -> lấy phần tử đầu bên trong\nif (Array.isArray(json0) && json0.length > 0) {\n  json0 = json0[0];\n}\n\n// nếu json0 là object nhưng có thêm trường data chứa mảng -> unwrap\nif (json0 && Array.isArray(json0.data) && json0.data.length > 0) {\n  json0 = json0.data[0];\n}\n\n// bây giờ json0 là object đầu tiên (nếu có)\nconst first = json0 || {};\n\nreturn [{\n  json: {\n    exists: !!first.name,              // true nếu tồn tại name\n    existed_name: first.name || null,  // trả tên nếu có\n    data: first || null                // trả object (không trả mảng)\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -624,
+        640
+      ],
+      "id": "d55b8cef-b81d-448a-ab9b-53c7df811932",
+      "name": "Kiểm tra Promotion Campaign tồn tại?"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "32c56d2b-fe41-4163-bc63-f272cfcea78a",
+              "leftValue": "={{ $json.exists }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -464,
+        640
+      ],
+      "id": "9dc00a78-6205-4c09-9cad-06e12b4414b7",
+      "name": "Nếu chưa có",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "doctype": "Promotion Campaign",
+        "operation": "create",
+        "parameters": "={\n  \"promotion_code\": \"{{ $('Loop Over Promotion').item.json.promotion_code }}\",\n  \"promotion_name\": \"{{ $('Loop Over Promotion').item.json.promotion_name }}\"\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        688
+      ],
+      "id": "230eeb15-f07f-44ee-a43a-40bd1e3c45f2",
+      "name": "Thêm mới Promotion Campaign",
+      "alwaysOutputData": false,
+      "retryOnFail": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "amount": 0.2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        16,
+        624
+      ],
+      "id": "0bb93793-3763-41e8-905b-bfcecfd4b541",
+      "name": "Pending Add Promotion Campign",
+      "webhookId": "409f450b-8c1c-42db-b4c1-970930a96609"
+    },
+    {
+      "parameters": {
+        "doctype": "Routing Sales",
+        "operation": "find",
+        "query": "={\n  \"filters\": [\n    [\"route_code\", \"=\", \"{{ $json.custom_router_code }}\"]\n  ]\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -1440,
+        256
+      ],
+      "id": "0783ef6d-6e9a-492b-9f43-53ef6a77a475",
+      "name": "Kiểm tra danh mục Routing Sales",
+      "alwaysOutputData": false,
+      "retryOnFail": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const arr = $items('Kiểm tra danh mục Routing Sales');\n\n// nếu không có item nào -> trả false\nif (!Array.isArray(arr) || arr.length === 0) {\n  return [{ json: { exists: false, existed_name: null, data: null } }];\n}\n\n// lấy json của item đầu\nlet json0 = arr[0]?.json;\n\n// nếu json0 là một mảng (vd: [[{...}]]) -> lấy phần tử đầu bên trong\nif (Array.isArray(json0) && json0.length > 0) {\n  json0 = json0[0];\n}\n\n// nếu json0 là object nhưng có thêm trường data chứa mảng -> unwrap\nif (json0 && Array.isArray(json0.data) && json0.data.length > 0) {\n  json0 = json0.data[0];\n}\n\n// bây giờ json0 là object đầu tiên (nếu có)\nconst first = json0 || {};\n\nreturn [{\n  json: {\n    exists: !!first.name,              // true nếu tồn tại name\n    existed_name: first.name || null,  // trả tên nếu có\n    data: first || null                // trả object (không trả mảng)\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1248,
+        256
+      ],
+      "id": "dabdcd65-1e7e-42aa-982a-913de928ea64",
+      "name": "Kiểm tra Routing Sales tồn tại?"
+    },
+    {
+      "parameters": {
+        "doctype": "Routing Sales",
+        "operation": "create",
+        "parameters": "={\n  \"route_code\": \"{{ $('[Add] Chuyển đổi dữ liệu').item.json.custom_router_code }}\",\n  \"route_name\": \"{{ $('[Add] Chuyển đổi dữ liệu').item.json.custom_router }}\",\n  \"sales_person\": \"{{ $('[Add] Chuyển đổi dữ liệu').item.json.custom_sales_person }}\"\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -2192,
+        576
+      ],
+      "id": "4e6448f8-c2e3-41d0-8298-9b8b748553fc",
+      "name": "Thêm mới Router Sale",
+      "alwaysOutputData": false,
+      "retryOnFail": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "32c56d2b-fe41-4163-bc63-f272cfcea78a",
+              "leftValue": "={{ $json.exists }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -2512,
+        480
+      ],
+      "id": "37bd0e6b-6716-4f8c-a3e6-72a09616763e",
+      "name": "Nếu chưa có Router Sale",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "doctype": "Customer",
+        "operation": "find",
+        "query": "={\n  \"filters\": [\n    [\"name\", \"=\", \"{{ $('Loop Over Items').item.json.payload.ma_kh }}\"]\n  ]\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -1872,
+        256
+      ],
+      "id": "4e14fe87-3e2a-4e8a-a47f-6dfc0745f753",
+      "name": "Tìm kiếm khách hàng",
+      "alwaysOutputData": false,
+      "retryOnFail": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "MBW DMS Cloud ERPNext"
+        }
+      },
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-backup",
+  "repo_owner": "MBW-Digital",
+  "repo_path": "sinhthaihcm/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-10-16T16:08:42.600Z",
+      "updatedAt": "2025-10-16T16:08:42.600Z",
+      "role": "workflow:owner",
+      "workflowId": "kwMeAdRjt1gpWKU9",
+      "projectId": "NLp1g7OOFWKDmygg"
+    }
+  ],
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-09-03T07:48:49.315Z",
+      "updatedAt": "2025-09-03T07:48:49.315Z",
+      "id": "HmMyDMy8FTsYQkDm",
+      "name": "ERPNext"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2025-10-16T16:11:17.647Z",
+  "versionId": "3e7ebc88-4656-449a-9467-271136d0c133"
+}
