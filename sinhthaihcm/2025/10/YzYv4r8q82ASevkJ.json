@@ -1,0 +1,317 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Lấy danh sách Brand của ERPNext",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Data Existence": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Data Exists": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Brand in MobiworkDMS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lấy danh sách Nhãn hiệu của MobiworkDMS": {
+      "main": [
+        [
+          {
+            "node": "Check Data Existence",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lấy danh sách Brand của ERPNext": {
+      "main": [
+        [
+          {
+            "node": "Lấy danh sách Nhãn hiệu của MobiworkDMS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Brand in MobiworkDMS": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SplitInBatches": {
+      "main": [
+        [
+          {
+            "node": "IF Data Exists",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Write Logs To ERPNEXT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-10-19T10:05:18.801Z",
+  "id": "YzYv4r8q82ASevkJ",
+  "isArchived": false,
+  "meta": null,
+  "name": "[ERPNEXT] Đồng bộ dữ liệu Brand từ ERPNEXT-> DMS",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1120,
+        192
+      ],
+      "id": "7ac02432-e344-445a-a740-b10d83558df4",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Lấy dữ liệu từ 2 nguồn\nconst dmsData = $node['Lấy danh sách Nhãn hiệu của MobiworkDMS'].json.data || [];\nconst erpData = $node['Lấy danh sách Brand của ERPNext'].json || [];   // ERPNext trả về array UOM\n\n// Chuẩn hóa ERP thành mảng mã (uppercase để so sánh)\nconst dmsCodes = dmsData.map(u => (u.ma || '').toUpperCase());\n\n// Lọc ra những đơn vị tính chỉ có ở DMS mà không có trong ERP\nreturn erpData\n  .filter(d => d.name && !dmsCodes.includes(d.name.toUpperCase()))\n  .map(d => ({\n    json: {\n      isExists: false,   // ERP chưa có\n      id: d.id || null,\n      ma: d.name,\n      ten: d.brand,\n      trang_thai: true,\n      stt: 1\n    }\n  }));"
+      },
+      "name": "Check Data Existence",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        -448,
+        192
+      ],
+      "id": "43ed4743-643b-4693-99d8-7f50a16adc9f",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json['isExists'] }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "name": "IF Data Exists",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        0,
+        192
+      ],
+      "id": "c2815a90-3da8-4068-93a5-457b0d6ac650",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        448,
+        272
+      ],
+      "id": "f74c8f41-9f8d-41b6-9ffa-a805b4c4bdb8",
+      "name": "Wait",
+      "webhookId": "f3fd830b-7bef-41fd-8917-6ff19cd581f3"
+    },
+    {
+      "parameters": {
+        "resource": "brand",
+        "additionalFields": {}
+      },
+      "type": "CUSTOM.mbwdmsCustom",
+      "typeVersion": 1,
+      "position": [
+        -672,
+        192
+      ],
+      "id": "a86ddbe0-6b82-428b-9fb1-f6ebcf9ff333",
+      "name": "Lấy danh sách Nhãn hiệu của MobiworkDMS",
+      "credentials": {
+        "MBWDMSCustomApi": {
+          "id": "LMRCQovVC82iv3i6",
+          "name": "MBW DMS DEV - pp.erpnext.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "doctype": "Brand",
+        "fields": "name,brand"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -896,
+        192
+      ],
+      "id": "d78fc0ec-ad20-4fd6-9b83-f01fdbf73c0c",
+      "name": "Lấy danh sách Brand của ERPNext",
+      "alwaysOutputData": true,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "pp.mbwnext.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "brand",
+        "operation": "create",
+        "data": "={\"ten\":\"{{ $('SplitInBatches').item.json.ten }}\",\"ma\":\"{{ $('SplitInBatches').item.json.ma }}\",\"trang_thai\": true,\"stt\":1} "
+      },
+      "type": "CUSTOM.mbwdmsCustom",
+      "typeVersion": 1,
+      "position": [
+        224,
+        128
+      ],
+      "id": "7f0e70ff-56ed-4811-895f-5a4617957a5d",
+      "name": "Create Brand in MobiworkDMS",
+      "credentials": {
+        "MBWDMSCustomApi": {
+          "id": "LMRCQovVC82iv3i6",
+          "name": "MBW DMS DEV - pp.erpnext.com"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {
+          "reset": false
+        }
+      },
+      "id": "4555a75a-96fb-4403-a13e-8e47cd50834d",
+      "name": "SplitInBatches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        -224,
+        192
+      ],
+      "typeVersion": 2,
+      "notesInFlow": true
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Integration Logs",
+        "operation": "create",
+        "parameters": "={\n  \"sync_type\": \"Brand\",\n  \"records_processed\": \"{{ $('Check Data Existence').all().length}}\",\n  \"status\": \"Success\",\n  \"log_message\": \"Đồng bộ dữ liệu Brand thành công\"\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "82a05742-007d-47cd-a5f4-d0906cd733ba",
+      "name": "Write Logs To ERPNEXT",
+      "executeOnce": true,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "pp.mbwnext.com"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-backup",
+  "repo_owner": "MBW-Digital",
+  "repo_path": "sinhthaihcm/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-10-19T10:05:18.801Z",
+      "updatedAt": "2025-10-19T10:05:18.801Z",
+      "role": "workflow:owner",
+      "workflowId": "YzYv4r8q82ASevkJ",
+      "projectId": "NLp1g7OOFWKDmygg"
+    }
+  ],
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-09-03T07:48:49.315Z",
+      "updatedAt": "2025-09-03T07:48:49.315Z",
+      "id": "HmMyDMy8FTsYQkDm",
+      "name": "ERPNext"
+    },
+    {
+      "createdAt": "2025-09-25T07:56:38.911Z",
+      "updatedAt": "2025-09-25T07:56:38.911Z",
+      "id": "U2rTcFSAg0Nbuwfe",
+      "name": "Đã hoàn thành"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2025-10-19T10:23:58.096Z",
+  "versionId": "2fc4e7ce-a9a7-401a-9478-0a0d93134d46"
+}
