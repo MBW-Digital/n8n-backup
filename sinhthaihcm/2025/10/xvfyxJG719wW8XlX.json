@@ -1,0 +1,265 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get Loại Khách Hàng in MobiworkDMS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SplitInBatches": {
+      "main": [
+        [
+          {
+            "node": "Create Customer Type in MobiworkDMS",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Write Logs To ERPNEXT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Data Existence": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Loại Khách Hàng in MobiworkDMS": {
+      "main": [
+        [
+          {
+            "node": "ERPNext Customer Category",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Customer Type in MobiworkDMS": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ERPNext Customer Category": {
+      "main": [
+        [
+          {
+            "node": "Check Data Existence",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-10-19T15:45:08.449Z",
+  "id": "xvfyxJG719wW8XlX",
+  "isArchived": false,
+  "meta": null,
+  "name": "[ERPNEXT] Đồng bộ dữ liệu Customer Category ERPNext -> DMS",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1056,
+        128
+      ],
+      "id": "99ccfca1-d08b-4dad-88de-0e5c4f67baa6",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {
+          "reset": false
+        }
+      },
+      "id": "e91ea6f7-9ccc-42a6-9385-379466ab572b",
+      "name": "SplitInBatches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        -176,
+        240
+      ],
+      "typeVersion": 2,
+      "notesInFlow": true
+    },
+    {
+      "parameters": {
+        "functionCode": "const N = (s) => (s ?? '').toString().normalize('NFC').trim().toUpperCase();\n\n// 1) Lấy dữ liệu từ DMS\nconst dmsSource = $node['Get Loại Khách Hàng in MobiworkDMS'].json ?? [];\nconst dmsRaw = Array.isArray(dmsSource)\n  ? (dmsSource[0]?.data ?? [])\n  : (dmsSource.data ?? []);\n\n// 2) Lấy dữ liệu từ ERP\nconst erpRaw = Array.isArray($json) ? $json : [];\n\n// 3) Lấy danh sách mã kênh đã có trong ERP\nconst dmsCodes = new Set(\n  dmsRaw\n    .map(x => N(x.ma)) // Dùng đúng field trong ERP\n    .filter(Boolean)\n);\n\n// 4) Chuẩn hóa dữ liệu từ DMS\nconst erp = erpRaw\n  .map(x => ({\n    ma: (x.name ?? '').toString().trim(),\n    ten: (x.customer_category ?? '').toString().trim()\n  }))\n  .filter(x => x.ma && x.ten);\n\n// 5) Chỉ giữ lại các record **chưa có trong ERP**\nconst toCreate = erp\n  .filter(x => !dmsCodes.has(N(x.ma)))\n  .map(x => ({\n    ma: x.ma,\n    ten: x.ten,\n    active: true,\n    stt: 1\n  }));\n\n// 6) Nếu không có gì để tạo -> trả về []\nreturn toCreate.length ? toCreate.map(item => ({ json: item })) : [];\n"
+      },
+      "name": "Check Data Existence",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        128
+      ],
+      "id": "bb3e07f5-3e56-4acf-a076-7d9fcffd15a0",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Integration Logs",
+        "operation": "create",
+        "parameters": "={\n\n  \"sync_type\": \"Customer Category\",\n  \"records_processed\": \"{{ $items('Check Data Existence').length }}\",\n  \"status\": \"Success\",\n  \"log_message\": \"Đồng bộ dữ liệu Customer Category thành công\"\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "1b8187cb-63fb-4ab7-9b55-f03e37e8cc6c",
+      "name": "Write Logs To ERPNEXT",
+      "executeOnce": true,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "pp.mbwnext.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        272,
+        240
+      ],
+      "id": "28c0e2cc-f6d1-468f-ad7d-83469c87f64e",
+      "name": "Wait",
+      "webhookId": "032098e3-b118-4605-8131-0035c9917fb1"
+    },
+    {
+      "parameters": {
+        "resource": "customerType",
+        "additionalFields": {}
+      },
+      "type": "CUSTOM.mbwdmsCustom",
+      "typeVersion": 1,
+      "position": [
+        -832,
+        128
+      ],
+      "id": "05a20854-d656-4973-8cb7-e934b2d82e9a",
+      "name": "Get Loại Khách Hàng in MobiworkDMS",
+      "credentials": {
+        "MBWDMSCustomApi": {
+          "id": "LMRCQovVC82iv3i6",
+          "name": "MBW DMS DEV - pp.erpnext.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "customerType",
+        "operation": "create",
+        "data": "={ \"ma\": \"{{ $json.ma }}\", \"ten\": \"{{ $json.ten }}\",\"trang_thai\": true, \"stt\": 1}"
+      },
+      "type": "CUSTOM.mbwdmsCustom",
+      "typeVersion": 1,
+      "position": [
+        48,
+        224
+      ],
+      "id": "515dd763-838f-40e6-86c8-49e97632a99e",
+      "name": "Create Customer Type in MobiworkDMS",
+      "credentials": {
+        "MBWDMSCustomApi": {
+          "id": "LMRCQovVC82iv3i6",
+          "name": "MBW DMS DEV - pp.erpnext.com"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "doctype": "Customer Category",
+        "fields": "customer_category,name"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -624,
+        128
+      ],
+      "id": "33024bea-8786-45b2-93cc-e5f6e869cbff",
+      "name": "ERPNext Customer Category",
+      "alwaysOutputData": true,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "pp.mbwnext.com"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-backup",
+  "repo_owner": "MBW-Digital",
+  "repo_path": "sinhthaihcm/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-10-19T15:45:08.449Z",
+      "updatedAt": "2025-10-19T15:45:08.449Z",
+      "role": "workflow:owner",
+      "workflowId": "xvfyxJG719wW8XlX",
+      "projectId": "NLp1g7OOFWKDmygg"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-10-19T15:45:21.567Z",
+  "versionId": "8f3fdf13-4939-405b-8d06-9375ae9c8271"
+}
