@@ -1,0 +1,313 @@
+{
+  "active": false,
+  "connections": {
+    "Check Data Existence": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Data Exists": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Distributor in MobiworkDMS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Company",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SplitInBatches": {
+      "main": [
+        [
+          {
+            "node": "IF Data Exists",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Write Logs To ERPNEXT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Company": {
+      "main": [
+        [
+          {
+            "node": "Get Distributor in MobiworkDMS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Distributor in MobiworkDMS": {
+      "main": [
+        [
+          {
+            "node": "Check Data Existence",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Distributor in MobiworkDMS": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-10-19T09:49:10.141Z",
+  "id": "UbB5ns6NWCdQvbYd",
+  "isArchived": false,
+  "meta": null,
+  "name": "[MBW DMS Cloud] Đồng bộ dữ liệu Nhà phân phối ERPNext -> DMS",
+  "nodes": [
+    {
+      "parameters": {
+        "functionCode": "// Helper chuẩn hóa để so sánh (upper-case + trim)\nconst N = s => (s ?? '').toString().trim().toUpperCase();\n\n// 1) Lấy dữ liệu\nconst dmsData = $node['Get Distributor in MobiworkDMS'].json?.data ?? [];\nconst erpData = $node['Company'].json ?? [];\n\n// 2) Tập mã đã có bên DMS\nconst dmsCodes = dmsData.map(u => (u.ma || '').toUpperCase());\n\n// 3) Lọc ra những item có trong ERP nhưng chưa có trong DMS\nconst filtered = erpData.filter(\n  e => e.abbr && !dmsCodes.includes(N(e.abbr))\n);\n\n// 4) Xây map cha -> danh sách con\nconst childrenMap = {};\nfor (const e of filtered) {\n  const parent = e.parent_territory || null;\n  if (!childrenMap[parent]) childrenMap[parent] = [];\n  childrenMap[parent].push(e);\n}\n\n// 5) Hàm duyệt DFS để sắp cha trước con sau\nconst ordered = [];\nfunction visit(node) {\n  ordered.push(node);\n  const childs = childrenMap[node.name] || [];\n  for (const c of childs) visit(c);\n}\n\n// 6) Bắt đầu từ các node gốc (không có parent hoặc parent không nằm trong filtered)\nconst rootNodes = filtered.filter(\n  e => !e.parent_territory || !filtered.find(x => x.name === e.parent_territory)\n);\n\nfor (const r of rootNodes) {\n  visit(r);\n}\n\n// 7) Trả kết quả\nreturn ordered.map(e => ({\n  json: {\n    isExists: false,               // để IF node biết là chưa tồn tại\n    ma: e.abbr || null,            // ✅ lấy abbr làm mã ERP -> DMS.ma\n    ten: e.company_name || null,   // tên hiển thị\n    parent_company: e.parent_company || null,\n    is_group: e.is_group || 0,\n    trang_thai: true,\n    stt: 1\n  }\n}));\n"
+      },
+      "name": "Check Data Existence",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        -448,
+        192
+      ],
+      "id": "8ba04355-a858-473b-b175-b95fd4b1c616",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json['isExists'] }}",
+              "operation": "=equal",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "name": "IF Data Exists",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        0,
+        192
+      ],
+      "id": "88b24246-41f5-41d6-b007-5516bd8b06bf",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1120,
+        192
+      ],
+      "id": "04d042d2-8a4c-4c90-8192-2e0c376d8763",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        448,
+        264
+      ],
+      "id": "2aa3d9c0-7063-4309-94f2-a2cf2a3cec12",
+      "name": "Wait",
+      "webhookId": "caf9e7ab-4982-475f-af39-6bd534a6ca10"
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {
+          "reset": false
+        }
+      },
+      "id": "a5da2665-1f5b-4282-84ae-ad92d30390ef",
+      "name": "SplitInBatches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        -224,
+        192
+      ],
+      "typeVersion": 2,
+      "notesInFlow": true
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Integration Logs",
+        "operation": "create",
+        "parameters": "={\n  \"sync_type\": \"Company\",\n  \"records_processed\": \"{{ $('Check Data Existence').all().length}}\",\n  \"status\": \"Success\",\n  \"log_message\": \"Đồng bộ dữ liệu Company thành công\"\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "b250b7f8-98ba-4356-9b69-e1385e7ab18c",
+      "name": "Write Logs To ERPNEXT",
+      "executeOnce": true,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "pp.mbwnext.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "doctype": "Company",
+        "fields": "name,company_name, is_group, parent_company,custom_company_type,abbr",
+        "filters": {
+          "filter": [
+            {
+              "field": "custom_company_type",
+              "value": "Distributor"
+            }
+          ]
+        }
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -896,
+        192
+      ],
+      "id": "374d2752-325f-43e4-80eb-5c68e174d6bc",
+      "name": "Company",
+      "alwaysOutputData": true,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "pp.mbwnext.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "distributor",
+        "additionalFields": {}
+      },
+      "type": "CUSTOM.mbwdmsCustom",
+      "typeVersion": 1,
+      "position": [
+        -672,
+        192
+      ],
+      "id": "7b49aeb1-a01f-4e3e-8f0e-77893dcb8da6",
+      "name": "Get Distributor in MobiworkDMS",
+      "credentials": {
+        "MBWDMSCustomApi": {
+          "id": "LMRCQovVC82iv3i6",
+          "name": "MBW DMS DEV - pp.erpnext.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "distributor",
+        "operation": "createDistributor",
+        "distributorData": "={\"ma\": \"{{ $json.ma }}\",\n\"ten\": \"{{ $json.ten }}\",\n\"parentid\": \"{{ $json.parent_company }}\",\n\"trang_thai\": true,\n\"stt\": 1}"
+      },
+      "type": "CUSTOM.mbwdmsCustom",
+      "typeVersion": 1,
+      "position": [
+        224,
+        256
+      ],
+      "id": "5057ba95-1000-4143-9c10-787eb2f2a05e",
+      "name": "Create Distributor in MobiworkDMS",
+      "credentials": {
+        "MBWDMSCustomApi": {
+          "id": "LMRCQovVC82iv3i6",
+          "name": "MBW DMS DEV - pp.erpnext.com"
+        }
+      },
+      "onError": "continueErrorOutput"
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-backup",
+  "repo_owner": "MBW-Digital",
+  "repo_path": "sinhthaihcm/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-10-19T09:49:10.141Z",
+      "updatedAt": "2025-10-19T09:49:10.141Z",
+      "role": "workflow:owner",
+      "workflowId": "UbB5ns6NWCdQvbYd",
+      "projectId": "NLp1g7OOFWKDmygg"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-10-19T09:58:38.672Z",
+  "versionId": "73935874-a103-4b9b-abfa-08dcea21825c"
+}
