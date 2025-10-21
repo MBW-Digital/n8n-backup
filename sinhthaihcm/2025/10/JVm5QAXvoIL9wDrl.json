@@ -1,0 +1,1230 @@
+{
+  "active": false,
+  "connections": {
+    "On clicking 'execute'": {
+      "main": [
+        [
+          {
+            "node": "MBWD ERPNext",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "MBWD ERPNext",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MBWD ERPNext": {
+      "main": [
+        [
+          {
+            "node": "Get Khách Hàng in MobiworkDMS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split": {
+      "main": [
+        [
+          {
+            "node": "Merge Data Info",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Merge Data Info",
+            "type": "main",
+            "index": 1
+          }
+        ],
+        [
+          {
+            "node": "Kiểm tra xem dữ liệu có tồn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "[Update] Chuyển đổi dữ liệu",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "[Add] Chuyển đổi dữ liệu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kiểm tra xem dữ liệu có tồn": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[Update] Chuyển đổi dữ liệu": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[Add] Chuyển đổi dữ liệu": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Kiểm tra xem dữ liệu Customer Group tồn tại ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kiểm tra xem dữ liệu Item Group tồn tại ?": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Kiểm tra xem dữ liệu Item Group tồn tại ?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Customer Group",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Return",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Customer Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow": {
+      "main": [
+        [
+          {
+            "node": "Get Territory By ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow1": {
+      "main": [
+        [
+          {
+            "node": "Update Customer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Data Info": {
+      "main": [
+        [
+          {
+            "node": "Write Logs To ERPNEXT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kiểm tra xem dữ liệu Customer Group tồn tại ?": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Khách Hàng in MobiworkDMS": {
+      "main": [
+        [
+          {
+            "node": "Get List Contact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Contact ERPNext": {
+      "main": [
+        [
+          {
+            "node": "List Customer Group",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get List Contact": {
+      "main": [
+        [
+          {
+            "node": "Contact ERPNext",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Customer Group": {
+      "main": [
+        [
+          {
+            "node": "List Customer Type",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "List Customer Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Customer Type": {
+      "main": [
+        [
+          {
+            "node": "Split",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Split",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Customer Group": {
+      "main": [
+        [
+          {
+            "node": "Kiểm tra xem dữ liệu Item Group tồn tại ?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Kiểm tra xem dữ liệu Item Group tồn tại ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Customer": {
+      "main": [
+        [
+          {
+            "node": "Update status Success queue",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update status Failed queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update status Success queue": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update status Failed queue": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update status Success queue1": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update status Failed queue1": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Customer": {
+      "main": [
+        [
+          {
+            "node": "Update status Success queue1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update status Failed queue1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Customer Type": {
+      "main": [
+        [
+          {
+            "node": "Return",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Return",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Territory By ID": {
+      "main": [
+        [
+          {
+            "node": "Create Customer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-10-20T07:32:28.155Z",
+  "id": "JVm5QAXvoIL9wDrl",
+  "isArchived": false,
+  "meta": null,
+  "name": "[ERPNEXT] Cập nhật dữ liệu Khách hàng từ Queue ERPNEXT sang DMS",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "f93fe77e-d43f-4948-ad92-19cf149537ec",
+      "name": "On clicking 'execute'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        -2240,
+        480
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "id": "c3662969-a6ef-4f79-a620-9e3c5acb6a8d",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        -2240,
+        672
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "fields": "reference_doctype,reference_name,operation,payload,name",
+        "filters": {
+          "filter": [
+            {
+              "field": "source_data",
+              "value": "MBW NEXT"
+            },
+            {
+              "field": "status",
+              "operator": "in",
+              "value": "Pending"
+            },
+            {
+              "field": "reference_doctype",
+              "value": "Customer"
+            }
+          ]
+        }
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -2032,
+        576
+      ],
+      "id": "af89c3d1-881c-4cc8-a300-fc0b6bfc15ba",
+      "name": "MBWD ERPNext",
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "pp.mbwnext.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Hàm parse an toàn\nfunction safeParse(value) {\n  if (typeof value !== 'string') return value;\n  const s = value?.trim?.() ?? '';\n  if (!s || (s[0] !== '{' && s[0] !== '[')) return value;\n  try { return JSON.parse(s); } catch { return value; }\n}\n\n// Lấy dữ liệu từ các node trước\nconst all = $items(\"MBWD ERPNext\");\nconst contacts = $items(\"Contact ERPNext\");\n\nconst type = $items('List Customer Type')\nlet types;\nif (Array.isArray(type[0]?.json)) {\n  types = type[0].json;\n\n// 2) Hoặc gói trong thuộc tính data\n} else if (Array.isArray(type[0]?.json?.data)) {\n  types = type[0].json.data.map(i => i.ma);\n\n// 3) Hoặc đã là nhiều item sẵn\n} else {\n  types = type.map(i => i.json);\n}\nconst group = $items('List Customer Group');\n\nlet groups;\nif (Array.isArray(group[0]?.json)) {\n  groups = group[0].json;\n\n// 2) Hoặc gói trong thuộc tính data\n} else if (Array.isArray(group[0]?.json?.data)) {\n  groups = group[0].json.data.map(i => i.ma);\n\n// 3) Hoặc đã là nhiều item sẵn\n} else {\n  groups = group.map(i => i.json);\n}\n\nlet records;\nlet address;\nlet contact;\n\n// 1) Trường hợp API trả về mảng ngay ở root\nif (Array.isArray(all[0]?.json)) {\n  records = all[0].json;\n\n// 2) Hoặc gói trong thuộc tính data\n} else if (Array.isArray(all[0]?.json?.data)) {\n  records = all[0].json.data;\n\n// 3) Hoặc đã là nhiều item sẵn\n} else {\n  records = all.map(i => i.json);\n}\n\n\n\nif (Array.isArray(contacts[0]?.json)) {\n  contact = contacts[0].json;\n\n// 2) Hoặc gói trong thuộc tính data\n} else if (Array.isArray(contacts[0]?.json?.data)) {\n  contact = contacts[0].json.data;\n\n// 3) Hoặc đã là nhiều item sẵn\n} else {\n  contact = contacts.map(i => i.json);\n}\n\n// Expand từng record\nreturn records.flatMap(r => {\n  // parse payload nếu có\n  const parsed = ('payload' in r) ? safeParse(r.payload) : r.payload;\n\n\n  let cnt = contact.find(a => a.name === parsed.customer_primary_contact) || null;\n  return {\n    json: {\n      ...r,\n      payload: parsed,\n      contact: cnt,\n      types: types,\n      groups: groups\n    }\n  };\n  });\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -608,
+        496
+      ],
+      "id": "6a0992db-58a4-4164-ad2b-423074e9f110",
+      "name": "Split"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -368,
+        496
+      ],
+      "id": "8d663345-03ee-4e6b-82e7-4d1912d2c3b7",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "amount": 0.5
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1392,
+        832
+      ],
+      "id": "7be16aad-1380-4c1a-82b5-a005704eb68a",
+      "name": "Wait",
+      "webhookId": "409f450b-8c1c-42db-b4c1-970930a96609"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "32c56d2b-fe41-4163-bc63-f272cfcea78a",
+              "leftValue": "={{ $json.exists }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        512
+      ],
+      "id": "5babf8c1-f4cc-4213-a184-a30e53b6485e",
+      "name": "If",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "jsCode": "// Code Node sau \"Merge Data Info\"\n\n// Helper chuẩn hóa chuỗi để so sánh\nconst N = s => (s ?? '').toString().trim().toUpperCase();\n\n// Lấy dữ liệu ERP đã split\nconst erpItems = $items().map(i => i.json);\n\n// Lấy dữ liệu từ DMS\nconst dmsItems = $items(\"Get Khách Hàng in MobiworkDMS\").map(i => i.json);\n\n// Tạo set cho nhanh\nconst dmsSet = new Set(dmsItems.map(x => N(x.makh)));\n\n// Gắn cờ exists\nreturn erpItems.map(r => {\n  const key = N(r.reference_name);\n  return {\n    json: {\n      ...r,\n      exists: dmsSet.has(key),\n      existed_name: dmsSet.has(key) ? key : null\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -160,
+        512
+      ],
+      "id": "7ce58dad-715d-402b-adcf-6e4052843dc8",
+      "name": "Kiểm tra xem dữ liệu có tồn"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ===== Lấy dữ liệu từ node \"Loop Over Items\" =====\nconst cur = $('Loop Over Items').item.json;\n\n// Payload chính của khách hàng\nconst p = cur.payload || {};\nconst contact = cur.contact || {};\nconst address = cur.address || {};   // đã join từ Address ERPNext\n\n// --------------------\n// 1. Chuẩn hóa dữ liệu\n// --------------------\nconst ma_kh = (p.customer_code || \"\").trim();\nconst ten_kh = (p.customer_name || \"\").trim();\nconst nhom_kh = (p.customer_group || \"\").trim();\nconst loai_kh = (p.custom_customer_category || \"\").trim();\nconst trang_thai_kh = (p.disabled === 1 ? \"Ngưng hoạt động\" : \"Hoạt động\");\n\nconst sdt = (contact.phone || contact.mobile_no).trim();\nconst email = (contact.email_id || \"\").trim();\nconst nguoi_lien_he = (contact.first_name || \"\").trim();\nconst chuc_vu = (contact.designation || \"\").trim();\nconst sinh_nhat = contact.birthday || \"01-01-2025\";\nlet addr = \"\";\nif (address.address_line1) addr += address.address_line1 + \", \";\nif (address.address_line2) addr += address.address_line2 + \", \";\nif (address.state) addr += address.state + \", \";\nif (address.city) addr += address.city + \", \";\nif (address.country) addr += address.country;\nconst dia_chi = addr;\nconst dia_chi_gh = addr;\nconst khu_vuc = p.territory || \"Vietnam\";\n\n// --------------------\n// 2. Gộp dữ liệu thành Output chuẩn\n// --------------------\nconst out = {\n  trang_thai: true,\n  ma_kh,\n  ten_kh,\n  nhom_kh,\n  loai_kh,\n  trang_thai_kh,\n  kenh: (p.custom_channel || \"\").trim(),\n  dia_chi,\n  dia_chi_gh,\n  khu_vuc,\n  sinh_nhat,\n  nguoi_lien_he,\n  chuc_vu,\n  sdt,\n  email,\n  hinh_anh: (p.image || \"t\").trim(),\n  han_muc_cn: p.credit_limit || \"t\",\n  types: cur.types,\n  groups: cur.groups,\n  name_queue: cur.name\n};\n\nreturn { json: out };\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        176,
+        320
+      ],
+      "id": "e635d60c-ef11-4ad9-a9a9-8f94fdf50415",
+      "name": "[Update] Chuyển đổi dữ liệu"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ===== Lấy dữ liệu từ node \"Loop Over Items\" =====\nconst cur = $('Loop Over Items').item.json;\n\n// Payload chính của khách hàng\nconst p = cur.payload || {};\nconst contact = cur.contact || {};\n\n\n// --------------------\n// 1. Chuẩn hóa dữ liệu\n// --------------------\nconst ma_kh = (p.customer_code || \"\").trim();\nconst ten_kh = (p.customer_name || \"\").trim();\nconst nhom_kh = (p.customer_group || \"\").trim();\nconst loai_kh = (p.custom_customer_category || \"\").trim();\nconst trang_thai_kh = p.disabled === 1 ? \"Ngưng hoạt động\" : \"Hoạt động\";\n\nconst sdt = ((contact.phone || contact.mobile_no || \"\")).trim();\nconst email = (contact.email_id || \"\").trim();\nconst nguoi_lien_he = (contact.first_name || \"\").trim();\nconst chuc_vu = (contact.designation || \"\").trim();\nconst sinh_nhat = contact.birthday || \"01-01-2025\";\n\n// --------------------\n// Ghép địa chỉ\n// --------------------\nlet addrParts = [];\nconst cleanAddress = (p.primary_address || \"\")\n  .replace(/<br\\s*\\/?>/gi, \", \")   // thay <br> hoặc <br/> bằng dấu phẩy\n  .replace(/\\n/g, \" \")              // bỏ xuống dòng\n  .replace(/\\s*,\\s*,+/g, \",\")       // bỏ dấu phẩy trùng\n  .replace(/,+\\s*$/, \"\")            // bỏ dấu phẩy cuối\n  .trim();\n\nconst dia_chi = cleanAddress;\nconst dia_chi_gh = cleanAddress;\n\nconst khu_vuc = (p.territory || \"Vietnam\").trim();\n\n// --------------------\n// 2. Gộp dữ liệu thành Output chuẩn\n// --------------------\nconst out = {\n  trang_thai: true,\n  ma_kh,\n  ten_kh,\n  nhom_kh,\n  loai_kh,\n  trang_thai_kh,\n  kenh: (p.custom_channel || \"\").trim(),\n  dia_chi,\n  dia_chi_gh,\n  khu_vuc,\n  sinh_nhat,\n  nguoi_lien_he,\n  chuc_vu,\n  sdt,\n  email,\n  hinh_anh: (p.image || \"t\").trim(),\n  han_muc_cn: p.credit_limit || \"t\",\n  types: cur.types || [],\n  groups: cur.groups || [],\n  name_queue: cur.name || \"\"\n};\n\nreturn { json: out };\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        752
+      ],
+      "id": "6683dda5-ace9-40a2-ab99-7f285b9361c3",
+      "name": "[Add] Chuyển đổi dữ liệu"
+    },
+    {
+      "parameters": {
+        "content": "## Sub Workflow",
+        "height": 652,
+        "width": 2523,
+        "color": 6
+      },
+      "id": "5f60b6e7-17a7-40f7-a2de-1ae6941b2a60",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2272,
+        1024
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {},
+      "id": "ddc8d332-9ada-4e25-a245-9d91e2f09fbf",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        -2176,
+        1120
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsCode": "// Lấy brand từ input workflow\nconst inputType = $node[\"Execute Workflow Trigger\"].json.loai_kh;\n\n// Lấy danh sách brand từ node \"Check Nhãn hiệu\"\nconst types = $node[\"Execute Workflow Trigger\"].json.types;\n\n// Chuẩn hóa để so sánh\nconst normalize = s => (s ?? '').toString().trim().toUpperCase();\n\n// Tìm brand trong list\nconst match = types.find(b => normalize(b) === normalize(inputType));\n\nreturn [\n  {\n    json: {\n      input_brand: inputType,\n      exists: !!match,\n      existed_name: match ? match.ma : null,\n      existed_data: match || null\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1248,
+        1104
+      ],
+      "id": "b59c3694-7dfc-4da7-a475-469d4258f15f",
+      "name": "Kiểm tra xem dữ liệu Item Group tồn tại ?"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "32c56d2b-fe41-4163-bc63-f272cfcea78a",
+              "leftValue": "={{ $json.exists }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1824,
+        1120
+      ],
+      "id": "b38b0089-f4f6-4aeb-aa67-2cd0d30918ae",
+      "name": "If1",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "32c56d2b-fe41-4163-bc63-f272cfcea78a",
+              "leftValue": "={{ $json.exists }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -992,
+        1104
+      ],
+      "id": "f7e2bfea-7064-41fe-b6b7-0244ad7b2881",
+      "name": "If2",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8d513345-6484-431f-afb7-7cf045c90f4f",
+              "name": "Done",
+              "type": "boolean",
+              "value": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2af097c1-edaa-4bc1-9e0f-bd1fbe08e093",
+      "name": "Return",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -304,
+        1072
+      ],
+      "typeVersion": 3.3
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "={{$workflow.id}}",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "mode": "each",
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        368,
+        752
+      ],
+      "id": "4315af7e-3c8b-427e-91eb-d9c7566e40a3",
+      "name": "Execute Workflow",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{$workflow.id}}",
+          "cachedResultName": "={{$workflow.id}}"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "mode": "each",
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        368,
+        320
+      ],
+      "id": "ef18cd3e-9ad6-43c7-ac8a-3d0491f4ce97",
+      "name": "Execute Workflow1",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Integration Logs",
+        "operation": "create",
+        "parameters": "={\n  \"sync_type\": \"Customer\",\n  \"records_processed\": \"{{ $items().length }}\",\n  \"status\": \"Success\",\n  \"log_message\": \"\"\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        32,
+        144
+      ],
+      "id": "8fda4340-9bd4-4d68-abaf-24a7889ca674",
+      "name": "Write Logs To ERPNEXT",
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "pp.mbwnext.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "mergeByIndex",
+        "join": "inner"
+      },
+      "name": "Merge Data Info",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        144
+      ],
+      "id": "a48a6370-4308-466a-aee0-d39f6e372721"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Lấy brand từ input workflow\nconst inputGroup = $node[\"Execute Workflow Trigger\"].json.nhom_kh;\n\n// Lấy danh sách brand từ node \"Check Nhãn hiệu\"\nconst groups = $node[\"Execute Workflow Trigger\"].json.groups;\n\n// Chuẩn hóa để so sánh\nconst normalize = s => (s ?? '').toString().trim().toUpperCase();\n\n// Tìm brand trong list\nconst match = groups.find(b => normalize(b) === normalize(inputGroup));\n\nreturn [\n  {\n    json: {\n      input_brand: inputGroup,\n      exists: !!match,\n      existed_name: match ? match.ma : null,\n      existed_data: match || null\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2000,
+        1120
+      ],
+      "id": "12a6d30d-c828-45ed-a5f0-2dd67bf57e06",
+      "name": "Kiểm tra xem dữ liệu Customer Group tồn tại ?"
+    },
+    {
+      "parameters": {
+        "additionalFields": {}
+      },
+      "type": "CUSTOM.mbwdmsCustom",
+      "typeVersion": 1,
+      "position": [
+        -1568,
+        576
+      ],
+      "id": "a5f0751b-1cb1-4aaf-9285-453b2331d5fd",
+      "name": "Get Khách Hàng in MobiworkDMS",
+      "alwaysOutputData": true,
+      "credentials": {
+        "MBWDMSCustomApi": {
+          "id": "LMRCQovVC82iv3i6",
+          "name": "MBW DMS DEV - pp.erpnext.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "doctype": "Contact",
+        "fields": "name, first_name, middle_name, last_name, mobile_no, phone, email_id, designation",
+        "filters": {
+          "filter": [
+            {
+              "field": "=name",
+              "operator": "in",
+              "value": "={{ $node['Get List Contact'].json.names }}"
+            }
+          ]
+        }
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -1280,
+        576
+      ],
+      "id": "202f8ceb-34d0-44b2-ae52-99502bc1c59c",
+      "name": "Contact ERPNext",
+      "alwaysOutputData": true,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "pp.mbwnext.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "function safeParse(value) {\n  if (typeof value !== 'string') return value;\n  const s = value?.trim?.() ?? '';\n  if (!s || (s[0] !== '{' && s[0] !== '[')) return value;\n  try { return JSON.parse(s); } catch { return value; }\n}\n\nconst erpRaw = $node['MBWD ERPNext'].json ?? [];\nconst erpData = erpRaw.map(i => safeParse(i.payload))\nreturn [{\n  json: {\n    names: erpData.map(i => i.customer_primary_contact).filter(Boolean)\n  }\n}]\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1424,
+        576
+      ],
+      "id": "c368ad30-a91d-45b3-855a-1981bb03e282",
+      "name": "Get List Contact"
+    },
+    {
+      "parameters": {
+        "resource": "customerGroup",
+        "additionalFields": {}
+      },
+      "type": "CUSTOM.mbwdmsCustom",
+      "typeVersion": 1,
+      "position": [
+        -1120,
+        576
+      ],
+      "id": "3ad29e78-1031-48c4-a4f5-5b0e81088750",
+      "name": "List Customer Group",
+      "alwaysOutputData": true,
+      "credentials": {
+        "MBWDMSCustomApi": {
+          "id": "LMRCQovVC82iv3i6",
+          "name": "MBW DMS DEV - pp.erpnext.com"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "resource": "customerType",
+        "additionalFields": {}
+      },
+      "type": "CUSTOM.mbwdmsCustom",
+      "typeVersion": 1,
+      "position": [
+        -928,
+        576
+      ],
+      "id": "3cb10425-cc45-452d-9084-e944768b5411",
+      "name": "List Customer Type",
+      "alwaysOutputData": true,
+      "credentials": {
+        "MBWDMSCustomApi": {
+          "id": "LMRCQovVC82iv3i6",
+          "name": "MBW DMS DEV - pp.erpnext.com"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "resource": "customerGroup",
+        "operation": "create",
+        "data": "={\"ma\":\"{{$node[\"Execute Workflow Trigger\"].json.nhom_kh}}\", \"ten\":\"{{$node[\"Execute Workflow Trigger\"].json.nhom_kh}}\", \"trang_thai\": true, \"stt\": 1 }"
+      },
+      "type": "CUSTOM.mbwdmsCustom",
+      "typeVersion": 1,
+      "position": [
+        -1568,
+        1216
+      ],
+      "id": "9efbe4eb-3fd8-4fbf-9616-a3257dbddfa1",
+      "name": "Create Customer Group",
+      "alwaysOutputData": true,
+      "credentials": {
+        "MBWDMSCustomApi": {
+          "id": "2SVxatk3bkSth64j",
+          "name": "MBW DMS Cloud"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "createCustomer",
+        "customerData": "={\n  \"trang_thai\": true,\n  \"ma_kh\": \"{{ $('[Add] Chuyển đổi dữ liệu').item.json.ma_kh }}\",\n  \"ten_kh\": \"{{ $('[Add] Chuyển đổi dữ liệu').item.json.ten_kh }}\",\n  \"nhom_kh\": \"{{ $('[Add] Chuyển đổi dữ liệu').item.json.nhom_kh }}\",\n  \"loai_kh\": \"{{ $('[Add] Chuyển đổi dữ liệu').item.json.loai_kh }}\",\n  \"trang_thai_kh\": \"{{ $('[Add] Chuyển đổi dữ liệu').item.json.trang_thai_kh }}\",\n  \"kenh\": \"{{ $('[Add] Chuyển đổi dữ liệu').item.json.kenh }}\",\n  \"dia_chi\": \"{{ $('[Add] Chuyển đổi dữ liệu').item.json.dia_chi }}\",\n  \"dia_chi_gh\": \"{{ $('[Add] Chuyển đổi dữ liệu').item.json.dia_chi_gh }}\",\n  \"khu_vuc\": \"{{ $json.territory_code }}\",\n  \"sinh_nhat\": \"{{ $('[Add] Chuyển đổi dữ liệu').item.json.sinh_nhat }}\",\n  \"nguoi_lien_he\": \"{{ $('[Add] Chuyển đổi dữ liệu').item.json.nguoi_lien_he }}\",\n  \"chuc_vu\": \"{{ $('[Add] Chuyển đổi dữ liệu').item.json.chuc_vu }}\",\n  \"sdt\": \"{{ $('[Add] Chuyển đổi dữ liệu').item.json.sdt }}\",\n  \"email\": \"{{ $('[Add] Chuyển đổi dữ liệu').item.json.email }}\",\n  \"hinh_anh\": \"{{ $('[Add] Chuyển đổi dữ liệu').item.json.hinh_anh }}\",\n  \"han_muc_cn\": \"{{ $('[Add] Chuyển đổi dữ liệu').item.json.han_muc_cn }}\"\n}"
+      },
+      "type": "CUSTOM.mbwdmsCustom",
+      "typeVersion": 1,
+      "position": [
+        768,
+        752
+      ],
+      "id": "7f719aa5-44cb-4073-a432-d2a6fc94f6d1",
+      "name": "Create Customer",
+      "alwaysOutputData": true,
+      "credentials": {
+        "MBWDMSCustomApi": {
+          "id": "LMRCQovVC82iv3i6",
+          "name": "MBW DMS DEV - pp.erpnext.com"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "operation": "update",
+        "parameters": "={\n\"status\": \"Success\"\n}",
+        "recordId": "={{ $('[Add] Chuyển đổi dữ liệu').item.json.name_queue}}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        960,
+        672
+      ],
+      "id": "d55c1e91-f671-4be2-aff6-eabd162a4898",
+      "name": "Update status Success queue",
+      "executeOnce": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "pp.mbwnext.com"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "operation": "update",
+        "parameters": "={\n\"status\": \"Failed\"\n}",
+        "recordId": "={{ $('[Add] Chuyển đổi dữ liệu').item.json.name_queue }}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        960,
+        848
+      ],
+      "id": "4998bb3d-e32b-467a-97d9-30289d8d454b",
+      "name": "Update status Failed queue",
+      "executeOnce": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "pp.mbwnext.com"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "operation": "update",
+        "parameters": "={\n\"status\": \"Success\"\n}",
+        "recordId": "={{ $('[Update] Chuyển đổi dữ liệu').item.json.name_queue}}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        816,
+        256
+      ],
+      "id": "e561b31b-0fbf-46e7-bb8d-1ae3fdcaae64",
+      "name": "Update status Success queue1",
+      "executeOnce": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "pp.mbwnext.com"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "operation": "update",
+        "parameters": "={\n\"status\": \"Failed\"\n}",
+        "recordId": "={{ $('[Update] Chuyển đổi dữ liệu').item.json.name_queue}}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        816,
+        432
+      ],
+      "id": "9eb66262-1c6a-48ed-bb6d-f1e27b4a82be",
+      "name": "Update status Failed queue1",
+      "executeOnce": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "pp.mbwnext.com"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "updateCustomer",
+        "customerData": "={\n  \"trang_thai\": true,\n  \"ma_kh_cu\": \"{{ $('[Update] Chuyển đổi dữ liệu').item.json.ma_kh }}\",\n  \"ma_kh\": \"{{ $('[Update] Chuyển đổi dữ liệu').item.json.ma_kh }}\",\n  \"ten_kh\": \"{{ $('[Update] Chuyển đổi dữ liệu').item.json.ten_kh }}\",\n  \"nhom_kh\": \"{{ $('[Update] Chuyển đổi dữ liệu').item.json.nhom_kh }}\",\n  \"loai_kh\": \"{{ $('[Update] Chuyển đổi dữ liệu').item.json.loai_kh }}\",\n  \"trang_thai_kh\": \"{{ $('[Update] Chuyển đổi dữ liệu').item.json.trang_thai_kh }}\",\n  \"kenh\": \"{{ $('[Update] Chuyển đổi dữ liệu').item.json.kenh }}\",\n  \"dia_chi\": \" {{ $('[Update] Chuyển đổi dữ liệu').item.json.dia_chi }}\",\n  \"dia_chi_gh\": \"{{ $('[Update] Chuyển đổi dữ liệu').item.json.dia_chi_gh }}\",\n  \"khu_vuc\": \"{{ $('[Update] Chuyển đổi dữ liệu').item.json.khu_vuc }}\",\n  \"sinh_nhat\": \"{{ $('[Update] Chuyển đổi dữ liệu').item.json.sinh_nhat }}\",\n  \"nguoi_lien_he\": \"{{ $('[Update] Chuyển đổi dữ liệu').item.json.nguoi_lien_he }}\",\n  \"chuc_vu\": \"{{ $('[Update] Chuyển đổi dữ liệu').item.json.chuc_vu }}\",\n  \"sdt\": \"{{ $('[Update] Chuyển đổi dữ liệu').item.json.sdt }}\",\n  \"email\": \"{{ $('[Update] Chuyển đổi dữ liệu').item.json.email }}\",\n  \"hinh_anh\": \"{{ $('[Update] Chuyển đổi dữ liệu').item.json.hinh_anh }}\",\n  \"han_muc_cn\": \"{{ $('[Update] Chuyển đổi dữ liệu').item.json.han_muc_cn }}\"\n}"
+      },
+      "type": "CUSTOM.mbwdmsCustom",
+      "typeVersion": 1,
+      "position": [
+        560,
+        320
+      ],
+      "id": "206fa401-f0c9-445e-bce0-bbb650162f71",
+      "name": "Update Customer",
+      "alwaysOutputData": true,
+      "credentials": {
+        "MBWDMSCustomApi": {
+          "id": "2SVxatk3bkSth64j",
+          "name": "MBW DMS Cloud"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "resource": "customerType",
+        "operation": "create",
+        "data": "={\"ma\":\"{{$node[\"Execute Workflow Trigger\"].json.loai_kh}}\", \"ten\":\"{{$node[\"Execute Workflow Trigger\"].json.loai_kh}}\", \"trang_thai\": true, \"stt\": 1 }"
+      },
+      "type": "CUSTOM.mbwdmsCustom",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        1184
+      ],
+      "id": "9fc51211-be2e-4879-a21b-973633a179fb",
+      "name": "Create Customer Type",
+      "alwaysOutputData": true,
+      "credentials": {
+        "MBWDMSCustomApi": {
+          "id": "2SVxatk3bkSth64j",
+          "name": "MBW DMS Cloud"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "doctype": "Territory",
+        "operation": "getById",
+        "recordId": "={{ $('[Add] Chuyển đổi dữ liệu').item.json.khu_vuc }}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        544,
+        752
+      ],
+      "id": "633e058b-7c54-4e0e-893f-926dd604d80f",
+      "name": "Get Territory By ID",
+      "alwaysOutputData": true,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "pp.mbwnext.com"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-backup",
+  "repo_owner": "MBW-Digital",
+  "repo_path": "sinhthaihcm/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-10-20T07:32:28.155Z",
+      "updatedAt": "2025-10-20T07:32:28.155Z",
+      "role": "workflow:owner",
+      "workflowId": "JVm5QAXvoIL9wDrl",
+      "projectId": "NLp1g7OOFWKDmygg"
+    }
+  ],
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-09-03T07:48:49.315Z",
+      "updatedAt": "2025-09-03T07:48:49.315Z",
+      "id": "HmMyDMy8FTsYQkDm",
+      "name": "ERPNext"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2025-10-20T09:13:45.189Z",
+  "versionId": "42681d76-5b1c-4b92-9fd2-b2d2112f5e5a"
+}
