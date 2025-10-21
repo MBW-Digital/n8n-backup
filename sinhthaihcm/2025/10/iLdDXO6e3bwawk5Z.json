@@ -1,0 +1,309 @@
+{
+  "active": true,
+  "connections": {
+    "Kiểm tra dữ liệu ĐH tồn tại?": {
+      "main": [
+        [
+          {
+            "node": "Kiểm tra xem dữ liệu DH",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kiểm tra xem dữ liệu DH": {
+      "main": [
+        [
+          {
+            "node": "Kiểm tra tồn tại DH",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kiểm tra tồn tại DH": {
+      "main": [
+        [
+          {
+            "node": "Xóa bản ghi DH",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Add Sale Order To Queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Xóa bản ghi DH": {
+      "main": [
+        [
+          {
+            "node": "Add Sale Order To Queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chuyển đổi dữ liệu": {
+      "main": [
+        [
+          {
+            "node": "Kiểm tra dữ liệu ĐH tồn tại?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Sale Order To Queue": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook Sale Order",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Chuyển đổi dữ liệu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Webhook Sale Order": {
+      "main": [
+        [
+          {
+            "node": "Call '[ERPNext] Cập nhật dữ liệu Đơn đặt hàng từ Queue sang Sale Order'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-10-20T09:20:48.270Z",
+  "id": "iLdDXO6e3bwawk5Z",
+  "isArchived": false,
+  "meta": null,
+  "name": "Webhook DMS Listen - Đơn Hàng",
+  "nodes": [
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "operation": "find",
+        "query": "={\n  \"filters\": [\n    [\"reference_name\", \"=\", \"{{ $json.body.data[0].ma_phieu }}\"],\n    [\"reference_doctype\", \"=\", \"Sale Order\"]\n  ]\n}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -704,
+        80
+      ],
+      "id": "a66b3455-d205-44b2-bfa6-0a21e3233564",
+      "name": "Kiểm tra dữ liệu ĐH tồn tại?",
+      "alwaysOutputData": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "pp.mbwnext.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const arr = $items('Kiểm tra dữ liệu ĐH tồn tại?');\n\n// Dữ liệu trả về có 2 lớp mảng -> lấy phần tử đầu tiên\nconst first = arr[0]?.json?.[0] || {};\n\nreturn [{\n  json: {\n    exists: !!first.name,           // True nếu có giá trị name\n    existed_name: first.name || null,\n    data: first                      // Lưu nguyên dữ liệu record\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -480,
+        80
+      ],
+      "id": "f525359d-2217-45e1-9d50-95896e5acaa1",
+      "name": "Kiểm tra xem dữ liệu DH"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "32c56d2b-fe41-4163-bc63-f272cfcea78a",
+              "leftValue": "={{ $json.exists }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -256,
+        80
+      ],
+      "id": "30909952-572e-427b-84ab-90c5f935b8ec",
+      "name": "Kiểm tra tồn tại DH",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "operation": "delete",
+        "recordId": "={{ $json.data.name }}"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        -32,
+        0
+      ],
+      "id": "bf60bb16-8497-4fce-846b-d565a4669d4c",
+      "name": "Xóa bản ghi DH",
+      "alwaysOutputData": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "pp.mbwnext.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  const body = item.json.body || {};\n\n  // Nếu webhook gửi mảng hoặc dạng key số\n  const orders = Object.values(body);\n\n  // Trả ra mỗi đơn hàng thành 1 item riêng\n  return orders.map(order => ({\n    json: {\n      ...item.json,\n      body: {\n        data: [\n          {\n            ...order,\n            reference_doctype: \"Sale Order\"\n          }\n        ]\n      }\n    }\n  }));\n}).flat();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -928,
+        80
+      ],
+      "id": "ba0a93b1-f51e-440d-91db-07da43693fa9",
+      "name": "Chuyển đổi dữ liệu"
+    },
+    {
+      "parameters": {
+        "doctype": "MBWNext Data Sync Queue",
+        "operation": "create",
+        "parameters": "={\n  \"reference_doctype\": \"{{ $('Chuyển đổi dữ liệu').item.json.body.data[0].reference_doctype }}\",\n  \"reference_name\": \"{{ $('Chuyển đổi dữ liệu').item.json.body.data[0].ma_phieu }}\",\n  \"operation\": \"Create\",\n  \"retry_count\": 0,\n  \"status\": \"Pending\",\n  \"payload\": {{ JSON.stringify($('Chuyển đổi dữ liệu').item.json.body.data[0] || {}) }},\n  \"log_message\": \"{{ $('Chuyển đổi dữ liệu').item.json.body.data[0].reference_doctype }} create from Webhook MBW DMS\",\n  \"create_date\": \"\",\n  \"sync_time\": null,\n  \"source_data\": \"MBW DMS\"\n}\n"
+      },
+      "type": "CUSTOM.frappeCustom",
+      "typeVersion": 1,
+      "position": [
+        192,
+        96
+      ],
+      "id": "b0559837-629c-49f9-bf75-294b999b0410",
+      "name": "Add Sale Order To Queue",
+      "alwaysOutputData": false,
+      "credentials": {
+        "FrappeCustomApi": {
+          "id": "IHHWnJsrVIrcNQJg",
+          "name": "pp.mbwnext.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"status\": \"ok\",\n  \"message\": \"Sale Order has insert Queue\"\n}",
+        "options": {}
+      },
+      "id": "59c7a089-afcf-46fe-a833-6bb43c84c918",
+      "name": "Respond to Webhook Sale Order",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        416,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "9556595e-0e5e-4017-ab51-713be78c2a7f",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1152,
+        80
+      ],
+      "id": "cbf986b9-eef4-469c-a6a1-c32e28a11fa4",
+      "name": "Webhook",
+      "webhookId": "9556595e-0e5e-4017-ab51-713be78c2a7f"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "4rRWvsQyKDW6Ye1X",
+          "cachedResultName": "[ERPNext] Cập nhật dữ liệu Đơn đặt hàng từ Queue sang Sale Order"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {}
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        640,
+        96
+      ],
+      "id": "f50d413a-4982-4bc5-bb30-10994fa2bc66",
+      "name": "Call '[ERPNext] Cập nhật dữ liệu Đơn đặt hàng từ Queue sang Sale Order'"
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-backup",
+  "repo_owner": "MBW-Digital",
+  "repo_path": "sinhthaihcm/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "createdAt": "2025-10-20T09:20:48.270Z",
+      "updatedAt": "2025-10-20T09:20:48.270Z",
+      "role": "workflow:owner",
+      "workflowId": "iLdDXO6e3bwawk5Z",
+      "projectId": "NLp1g7OOFWKDmygg"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-10-21T02:36:39.526Z",
+  "versionId": "db57c006-deaa-4455-abde-e8c853031d8d"
+}
